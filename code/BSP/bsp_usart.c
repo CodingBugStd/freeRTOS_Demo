@@ -6,10 +6,8 @@ void BSP_Usart_Init(void)
     USART_Config();
     USART_NVIC_Config();
     USART_DMA_Config();
-    USART_Cmd(USART1,ENABLE);
-    USART_Cmd(USART2,ENABLE);
-    USART_Cmd(USART3,ENABLE);
-
+    for(uint8_t temp=0;temp<3;temp++)
+        USART_Cmd(Target_Usart[temp],ENABLE);
 }
 
 void USART_GPIO_Init(void)
@@ -51,9 +49,8 @@ void USART_Config(void)
     USART_InitStruct.USART_StopBits = USART_StopBits_1;
     USART_InitStruct.USART_WordLength = USART_WordLength_8b;
 
-    USART_Init(USART1,&USART_InitStruct);
-    USART_Init(USART2,&USART_InitStruct);
-    USART_Init(USART3,&USART_InitStruct);
+    for(uint8_t temp=0;temp<3;temp++)
+        USART_Init(Target_Usart[temp],&USART_InitStruct);
 
 }
 
@@ -86,26 +83,43 @@ void USART_DMA_Config(void)
     DMA_InitTypeDef DMA_InitStruct;
 
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA2,ENABLE);
 
     DMA_InitStruct.DMA_BufferSize = 0;
     DMA_InitStruct.DMA_DIR = DMA_DIR_PeripheralDST;
     DMA_InitStruct.DMA_M2M = DMA_M2M_Disable;
     DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-	DMA_InitStruct.DMA_MemoryInc = DMA_MemoryInc_Enable;
-	DMA_InitStruct.DMA_Mode = DMA_Mode_Normal;
-	DMA_InitStruct.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-	DMA_InitStruct.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-	DMA_InitStruct.DMA_Priority = DMA_Priority_High;
+    DMA_InitStruct.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStruct.DMA_Mode = DMA_Mode_Normal;
+    DMA_InitStruct.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+    DMA_InitStruct.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStruct.DMA_Priority = DMA_Priority_Medium;
 
-    DMA_InitStruct.DMA_MemoryBaseAddr = (uint32_t)(USART_Tx_Sbuffer[0] + 1);
-    DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t)(&USART1->DR);
-    DMA_Init(DMA1_Channel4,&DMA_InitStruct);
+    for(uint8_t temp=0;temp<3;temp++)
+    {
+        DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t)&Target_Usart[temp]->DR;
+        DMA_InitStruct.DMA_MemoryBaseAddr = (uint32_t)&USART_Tx_Sbuffer[temp][1];
 
-    DMA_InitStruct.DMA_MemoryBaseAddr = (uint32_t)(USART_Tx_Sbuffer[0] + 1);
-    DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t)(&USART2->DR);
-    DMA_Init(DMA1_Channel7,&DMA_InitStruct);
+        DMA_Init(TargetDMA_Channel[temp],&DMA_InitStruct);
+        USART_DMACmd(Target_Usart[temp],USART_DMAReq_Tx,ENABLE);
+        DMA_ClearFlag(DMA1_FLAG_TC1);
+    }
 
-    
+    NVIC_InitTypeDef    NVIC_InitStruct;
+
+    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 8;
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
+
+    NVIC_InitStruct.NVIC_IRQChannel = DMA1_Channel4_IRQn;
+    NVIC_Init(&NVIC_InitStruct);
+    NVIC_InitStruct.NVIC_IRQChannel = DMA1_Channel7_IRQn;
+    NVIC_Init(&NVIC_InitStruct);
+    NVIC_InitStruct.NVIC_IRQChannel = DMA1_Channel2_IRQn;
+    NVIC_Init(&NVIC_InitStruct);
+
+    for(uint8_t temp=0;temp<3;temp++)
+        DMA_ITConfig(TargetDMA_Channel[temp],DMA_IT_TC,ENABLE);
 }
 
 void USART_Push(uint8_t USARTx,uint8_t len)
@@ -156,6 +170,11 @@ void Rx_SbufferInput(uint8_t USARTx,uint8_t dat)
     }
 }
 
+void Tx_Flag_Clear(uint8_t USARTx)
+{
+    USART_Tx_Sbuffer[USARTx-1][0] = 0;
+}
+
 int fputc (int c, FILE *fp)
 {
 	USART_SendData(USART1,c);
@@ -196,7 +215,8 @@ void DMA1_Channel4_IRQHandler(void)
 {
     if(DMA_GetITStatus(DMA1_IT_TC4) == SET)
     {
-
+        Tx_Flag_Clear(1);
+        TargetDMA_Channel[0]->CCR &= (uint16_t)(~DMA_CCR1_EN);
         DMA_ClearITPendingBit(DMA1_IT_TC4);
     }
 }
@@ -205,6 +225,8 @@ void DMA1_Channel7_IRQHandler(void)
 {
     if(DMA_GetITStatus(DMA1_IT_TC7) == SET)
     {
+        Tx_Flag_Clear(2);
+        TargetDMA_Channel[1]->CCR &= (uint16_t)(~DMA_CCR1_EN);
         DMA_ClearITPendingBit(DMA1_IT_TC7);
     }
 }
@@ -213,6 +235,8 @@ void DMA1_Channel2_IRQHandler(void)
 {
     if(DMA_GetITStatus(DMA1_IT_TC2) == SET)
     {
+        Tx_Flag_Clear(3);
+        TargetDMA_Channel[2]->CCR &= (uint16_t)(~DMA_CCR1_EN);
         DMA_ClearITPendingBit(DMA1_IT_TC2);
     }
 }

@@ -9,10 +9,10 @@ int main(void)
 {
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 	BSP_Usart_Init();
-	static uint8_t test[] = "HelloWord!";
+	static uint8_t test[15] = "HelloWorld!\r\n";
+	Usart_Send(1,test,15);
 	while(1)
 	{
-		Usart_Send(1,test,8);
 	}
 }
 

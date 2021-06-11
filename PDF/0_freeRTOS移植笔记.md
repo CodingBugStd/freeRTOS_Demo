@@ -247,7 +247,7 @@ traceTASK_SWITCHED_IN();
 
 FreeRTOS.h中的空宏定义
 
-```
+`` 0
 #ifndef portCONFIGURE_TIMER_FOR_RUN_TIME_STATS
     #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()
 #endif
