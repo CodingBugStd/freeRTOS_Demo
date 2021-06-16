@@ -142,7 +142,7 @@ void USART_Clear(uint8_t USARTx)
 
 uint8_t Usart_Send(uint8_t USARTx,uint8_t *dat,uint8_t len)
 {
-    if(USART_Tx_Sbuffer[USARTx-1][0]==0)
+    if(Usart_BusyCheck(USARTx)==0)
     {
         uint8_t temp;
         USART_Tx_Sbuffer[USARTx-1][0] = len;
@@ -155,7 +155,15 @@ uint8_t Usart_Send(uint8_t USARTx,uint8_t *dat,uint8_t len)
     return 1;
 }
 
-uint8_t*Read_Usart_Sbuffer(uint8_t USARTx)
+uint8_t Usart_BusyCheck(uint8_t USARTx)
+{
+    if(USART_Tx_Sbuffer[USARTx-1][0] != 0)
+        return 1;
+    else
+        return 0;
+}
+
+uint8_t*Usart_Read(uint8_t USARTx)
 {
     return USART_Rx_Sbuffer[USARTx-1];
 }

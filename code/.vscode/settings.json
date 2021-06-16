@@ -2,6 +2,7 @@
     "files.associations": {
         "bsp_usart.h": "c",
         "freertos.h": "c",
-        "task.h": "c"
+        "task.h": "c",
+        "stm32f10x.h": "c"
     }
 }

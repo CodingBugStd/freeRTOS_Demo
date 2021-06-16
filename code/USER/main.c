@@ -5,14 +5,34 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+void Usart_Test_Task(void*ptr);
+
+TaskHandle_t* Usart_Test = NULL;
+
 int main(void)
 {
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 	BSP_Usart_Init();
-	static uint8_t test[15] = "HelloWorld!\r\n";
-	Usart_Send(1,test,15);
+
+	xTaskCreate(
+		Usart_Test_Task,
+		"Test",
+		64,
+		NULL,
+		5,
+		Usart_Test
+	);
+
 	while(1)
 	{
+		
 	}
 }
 
+void Usart_Test_Task(void*ptr)
+{
+	while(1)
+	{
+		
+	}
+}

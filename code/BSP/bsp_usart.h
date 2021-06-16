@@ -22,8 +22,9 @@ void USART_NVIC_Config(void);
 void USART_DMA_Config(void);
 
 //发送&接收
-uint8_t*Read_Usart_Sbuffer(uint8_t USARTx);
+uint8_t*Usart_Read(uint8_t USARTx);
 uint8_t Usart_Send(uint8_t USARTx,uint8_t *dat,uint8_t len);
+uint8_t Usart_BusyCheck(uint8_t USARTx);
 void USART_Clear(uint8_t USARTx);
 void USART_Push(uint8_t USARTx,uint8_t len);
 

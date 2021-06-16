@@ -247,7 +247,7 @@ traceTASK_SWITCHED_IN();
 
 FreeRTOS.h中的空宏定义
 
-`` 0
+```c
 #ifndef portCONFIGURE_TIMER_FOR_RUN_TIME_STATS
     #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()
 #endif
@@ -277,7 +277,7 @@ void vTaskDelay( const TickType_t xTicksToDelay );
 
 延时函数，相比于普通的软件延时和裸机的定时器延时，vTaskDelay()有本质上的区别，它能使任务进入阻塞态，从而触发freeRTOS的任务调度器。可近似的简单理解为vTaskDelay()使任务阻塞一段时间，把cpu的使用权暂时交出去，阻塞的时间单位为系统心跳，系统心跳在freeRTOSConfig.h中定义
 
-```c
+​```c
 #define configTICK_RATE_HZ			( ( TickType_t ) 1000 )
 ```
 
