@@ -181,6 +181,7 @@ BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,					//任务函数指针
   
   static void LED_TestApp(void*ptr);
   
+  //应该定义TaskHandle_t而不是TaskHandle_t*
   static TaskHandle_t LED0_Handle = NULL;	//任务句柄
   static TaskHandle_t LED1_Handle = NULL;	//任务句柄
   
@@ -218,6 +219,8 @@ BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,					//任务函数指针
   freeRTOS就是通过对任务句柄的操作来实现任务的各种操作，包括 删除 重新配置优先级 等等
 
   若xTaskCreate()创建任务失败，则pxCreatedTask的值为NULL，一般情况下是内存不足导致的任务创建失败
+  
+  **注意:TaskHandle_t本身就是一个指向tskTaskControlBlock结构体的指针了，定义时不能用TaskHandle_t*。**
 
 ---
 
@@ -277,9 +280,10 @@ void vTaskDelay( const TickType_t xTicksToDelay );
 
 延时函数，相比于普通的软件延时和裸机的定时器延时，vTaskDelay()有本质上的区别，它能使任务进入阻塞态，从而触发freeRTOS的任务调度器。可近似的简单理解为vTaskDelay()使任务阻塞一段时间，把cpu的使用权暂时交出去，阻塞的时间单位为系统心跳，系统心跳在freeRTOSConfig.h中定义
 
-​```c
+```c
 #define configTICK_RATE_HZ			( ( TickType_t ) 1000 )
 ```
+
 
 阻塞的时间可以通过除以portTICK_RATE_MS来变成ms，portTICK_RATE_MS在FreeRTOS.h中有定义
 
@@ -307,23 +311,23 @@ BaseType_t xTaskDelayUntil( TickType_t * const pxPreviousWakeTime,
 - **返回值**
 
   pdFlase或pdTrue，分别表示失败和成功
-
-```c
-void LED_TestApp(void*ptr)
-{
-	portTickType xLastWakeTime;
-    uint16_t cycle,On_time;
-    uint8_t Target_LED;
-    cycle = ((LED_Data*)ptr)->Cycle;
-    On_time = ((LED_Data*)ptr)->On_Time;
-    Target_LED = ((LED_Data*)ptr)->Target_LED;
-    xLastWakeTime = xTaskGetTickCount();
-	while(1)
-	{
-		BSP_LED_CTR( Target_LED, LED_ON);
-        vTaskDelayUntil(&xLastWakeTime, On_time/portTICK_RATE_MS);
-        BSP_LED_CTR( Target_LED, LED_OFF);
-        vTaskDelayUntil(&xLastWakeTime, (cycle-On_time)/portTICK_RATE_MS );
-	}
-}
-```
+  
+  ```c
+  void LED_TestApp(void*ptr)
+  {
+  	portTickType xLastWakeTime;
+      uint16_t cycle,On_time;
+      uint8_t Target_LED;
+      cycle = ((LED_Data*)ptr)->Cycle;
+      On_time = ((LED_Data*)ptr)->On_Time;
+      Target_LED = ((LED_Data*)ptr)->Target_LED;
+      xLastWakeTime = xTaskGetTickCount();
+  	while(1)
+  	{
+  		BSP_LED_CTR( Target_LED, LED_ON);
+          vTaskDelayUntil(&xLastWakeTime, On_time/portTICK_RATE_MS);
+          BSP_LED_CTR( Target_LED, LED_OFF);
+          vTaskDelayUntil(&xLastWakeTime, (cycle-On_time)/portTICK_RATE_MS );
+  	}
+  }
+  ```

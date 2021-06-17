@@ -175,7 +175,8 @@ void Rx_SbufferInput(uint8_t USARTx,uint8_t dat)
     {
         USART_Rx_Sbuffer[USARTx-1][ USART_Rx_Sbuffer[USARTx+1][0]+1 ] = dat; 
         USART_Rx_Sbuffer[USARTx-1][0]++;
-    }
+    }else
+        USART_Rx_Sbuffer[USARTx-1][0] = Rx_SbufferSize;
 }
 
 void Tx_Flag_Clear(uint8_t USARTx)

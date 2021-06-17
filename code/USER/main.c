@@ -7,7 +7,7 @@
 
 void Usart_Test_Task(void*ptr);
 
-TaskHandle_t* Usart_Test = NULL;
+TaskHandle_t Usart_Test = NULL;
 
 int main(void)
 {
@@ -20,19 +20,23 @@ int main(void)
 		64,
 		NULL,
 		5,
-		Usart_Test
+		&Usart_Test
 	);
 
-	while(1)
-	{
-		
-	}
+	if(Usart_Test != NULL)
+		vTaskStartScheduler();
+	else
+		printf("Erro\r\n");
+
+	while(1);
 }
 
 void Usart_Test_Task(void*ptr)
 {
+	uint8_t Test[5] = "123\r\n";
 	while(1)
 	{
-		
+		Usart_Send(1,Test,5);
+		vTaskDelay(500/portTICK_RATE_MS);
 	}
 }
