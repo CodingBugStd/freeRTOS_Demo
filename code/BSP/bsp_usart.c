@@ -173,7 +173,7 @@ void Rx_SbufferInput(uint8_t USARTx,uint8_t dat)
     //判断缓存区是否满载
     if(USART_Rx_Sbuffer[USARTx-1][0] < Rx_SbufferSize-1)
     {
-        USART_Rx_Sbuffer[USARTx-1][ USART_Rx_Sbuffer[USARTx+1][0]+1 ] = dat; 
+        USART_Rx_Sbuffer[USARTx-1][ USART_Rx_Sbuffer[USARTx-1][0]+1 ] = dat;
         USART_Rx_Sbuffer[USARTx-1][0]++;
     }else
         USART_Rx_Sbuffer[USARTx-1][0] = Rx_SbufferSize;

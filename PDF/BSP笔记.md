@@ -8,12 +8,12 @@
 2. 需要配置DMA中断
    - 用与清除发送完成中断硬件标志位
    - 用于清除发送在忙软件标志位
-3. 配置Usart_DMA(应该算是Usart硬件的一部分,用于告诉DMA是发送还是接收)
+3. 配置Usart_DMA(应该算是Usart硬件的一部分,用于告诉DMA是发送还是接收
 4. DMA需要配置中断事件 DMA_ITConfig()，否则无法进入中断
 
 ## 2.代码
 
-### 	初始化
+### 	DMA初始化
 
 ```c
 void USART_DMA_Config(void)

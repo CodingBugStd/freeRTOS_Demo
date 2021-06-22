@@ -17,7 +17,7 @@ int main(void)
 	xTaskCreate(
 		Usart_Test_Task,
 		"Test",
-		64,
+		72,
 		NULL,
 		5,
 		&Usart_Test
@@ -27,16 +27,25 @@ int main(void)
 		vTaskStartScheduler();
 	else
 		printf("Erro\r\n");
-
-	while(1);
+	while(1)
+	{
+	}
 }
 
 void Usart_Test_Task(void*ptr)
 {
-	uint8_t Test[5] = "123\r\n";
+	uint8_t*dat;
 	while(1)
 	{
-		Usart_Send(1,Test,5);
-		vTaskDelay(500/portTICK_RATE_MS);
+		dat = Usart_Read(1);
+		if(*dat != 0)
+		{
+			while(Usart_BusyCheck(1));
+			Usart_Send(1,dat+1,*dat);
+			while(Usart_BusyCheck(1));
+			USART_Clear(1);
+		}
+		vTaskDelay(50/portTICK_RATE_MS);
 	}
 }
+
