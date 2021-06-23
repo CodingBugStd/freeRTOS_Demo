@@ -30,9 +30,9 @@
 .\objects\main.o: .\FWLIB\inc\misc.h
 .\objects\main.o: .\BSP\bsp_usart.h
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\main.o: USER\FreeRTOSConfig.h
 .\objects\main.o: .\freeRTOS\core\include\FreeRTOS.h
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-.\objects\main.o: .\USER\FreeRTOSConfig.h
 .\objects\main.o: .\freeRTOS\core\include\projdefs.h
 .\objects\main.o: .\freeRTOS\core\include\portable.h
 .\objects\main.o: .\freeRTOS\core\include\deprecated_definitions.h
