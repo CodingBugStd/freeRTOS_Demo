@@ -132,3 +132,17 @@ int fputc (int c, FILE *fp)
 }
 ```
 
+### 2.printf()陷入死循环(未解决)
+
+​	原因:可能是fputc()重入出现了问题,在多个任务调用printf()时会堵塞任务
+
+```x
+int fputc (int c, FILE *fp)
+{
+    while(Usart_BusyCheck(1));
+	USART_SendData(USART1,c);
+	while(USART_GetFlagStatus(USART1,USART_FLAG_TXE) == RESET);
+	return c;
+}
+```
+

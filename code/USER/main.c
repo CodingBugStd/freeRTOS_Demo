@@ -6,14 +6,14 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+void vApplicationIdleHook( void );
 void Usart_Send_Task(void*ptr);
 void Usart_Return_Task(void*ptr);
 
-TaskHandle_t Task1 = NULL;
-TaskHandle_t Task2 = NULL;
+static TaskHandle_t Task1 = NULL;
+static TaskHandle_t Task2 = NULL;
 
 static uint8_t Send1[] = "Task1\r\n";
-static uint8_t Send2[] = "Task2\r\n";
 
 int main(void)
 {
@@ -31,7 +31,7 @@ int main(void)
 	xTaskCreate(
 		Usart_Return_Task,
 		"Task2",
-		32,
+		16,
 		NULL,
 		6,
 		&Task2
@@ -47,7 +47,7 @@ void Usart_Return_Task(void*ptr)
 	while(1)
 	{
 		uint8_t*dat;
-		uint8_t Return_Dat[64];
+		uint8_t Target;
 		dat = Usart_Read(1);
 		if(*dat != 0)
 		{
@@ -55,14 +55,20 @@ void Usart_Return_Task(void*ptr)
 			{
 				if(*(dat+temp+1) == '\n')
 				{
+					Target = 0;
 					for(uint8_t n=0;n<temp+1;n++)
-						Return_Dat[n] = *(dat+n+1);
-					while(Usart_Send(1,Return_Dat,temp+1));
-					USART_Push(1,temp+1);
+					{
+						Target*=10;
+						Target+=*(dat+temp+1)-0x30;
+					}
+					USART_Push(1,temp+2);
+					//printf("Input:%d\r\n",Target);
+					//vTaskPrioritySet(Task1,Target);
 					break;
 				}
 			}
 		}
+		printf("Task2\r\n");
 		vTaskDelay(200/portTICK_RATE_MS);
 	}
 }
@@ -72,6 +78,12 @@ void Usart_Send_Task(void*ptr)
 	while(1)
 	{
 		printf("%s",(uint8_t*)ptr);
+		printf("优先级:%d\r\n",uxTaskPriorityGet(NULL));
 		vTaskDelay(200/portTICK_RATE_MS);
 	}
+}
+
+void vApplicationIdleHook(void)
+{
+	
 }

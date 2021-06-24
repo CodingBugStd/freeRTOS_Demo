@@ -389,3 +389,16 @@ void Usart_Send_Task(void*ptr)
 ```
 
 **注意:任务参数必须定义为静态变量,通过指针传入任务函数。**
+
+## 四,任务优先级API函数
+
+### 1.vTaskPrioritySet()
+
+​	可以在调度器运行之后改变任务的优先级。
+
+### 2.uxTaskPriorityGet()
+
+​	查询任务优先级。
+
+## 五,空闲任务
+
