@@ -114,3 +114,21 @@ static USART_TypeDef* Target_Usart[3] = {USART1,USART2,USART3};
 static DMA_Channel_TypeDef* TargetDMA_Channel[3] = {DMA1_Channel4,DMA1_Channel7,DMA1_Channel2};
 ```
 
+## 2.Debug日志
+
+### 	1.printf()和Usart_Send()冲突
+
+​			原因:Usart_Send()使用DMA发送,printf()使用串口直接发送,在Usart_Send()还没发送完时调用了printf(),导致DMA错误,Usart_Send()发送终止
+
+​			printf()重定向时增加DMA在忙标准判断
+
+```c
+int fputc (int c, FILE *fp)
+{
+    while(Usart_BusyCheck(1));
+	USART_SendData(USART1,c);
+	while(USART_GetFlagStatus(USART1,USART_FLAG_TXE) == RESET);
+	return c;
+}
+```
+

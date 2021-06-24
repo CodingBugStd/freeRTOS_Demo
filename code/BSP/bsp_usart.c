@@ -129,7 +129,7 @@ void USART_Push(uint8_t USARTx,uint8_t len)
         uint8_t temp;
         USART_Rx_Sbuffer[USARTx-1][0] -= len;
         for(temp=0; temp<USART_Rx_Sbuffer[USARTx-1][0] ; temp++)
-            USART_Rx_Sbuffer[USARTx][temp+1] = USART_Rx_Sbuffer[USARTx][temp+1+len];
+            USART_Rx_Sbuffer[USARTx-1][temp+1] = USART_Rx_Sbuffer[USARTx-1][temp+1+len];
         return;
     }
     USART_Clear(USARTx);
@@ -186,6 +186,7 @@ void Tx_Flag_Clear(uint8_t USARTx)
 
 int fputc (int c, FILE *fp)
 {
+    while(Usart_BusyCheck(1));
 	USART_SendData(USART1,c);
 	while(USART_GetFlagStatus(USART1,USART_FLAG_TXE) == RESET);
 	return c;
