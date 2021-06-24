@@ -38,5 +38,6 @@
 .\objects\main.o: .\freeRTOS\core\include\deprecated_definitions.h
 .\objects\main.o: .\freeRTOS\port\portmacro.h
 .\objects\main.o: .\freeRTOS\core\include\mpu_wrappers.h
+.\objects\main.o: .\freeRTOS\core\include\queue.h
 .\objects\main.o: .\freeRTOS\core\include\task.h
 .\objects\main.o: .\freeRTOS\core\include\list.h

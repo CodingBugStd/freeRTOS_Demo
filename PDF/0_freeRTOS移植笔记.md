@@ -332,7 +332,80 @@ BaseType_t xTaskDelayUntil( TickType_t * const pxPreviousWakeTime,
   }
   ```
 
-## 三,示例
+## 三,任务优先级API函数
+
+### 1.vTaskPrioritySet()
+
+​	可以在调度器运行之后改变任务的优先级。
+
+函数原型
+
+```c
+void vTaskPrioritySet( TaskHandle_t xTask,
+                           UBaseType_t uxNewPriority );
+```
+
+- **xTask 参数**
+
+  要操作的任务的句柄，若为任务本身，可以使用NULL
+
+- **uxNewPriority 参数**
+
+  目标优先级
+
+### 2.uxTaskPriorityGet()
+
+​	查询任务优先级。
+
+## 四,空闲任务
+
+## 五,队列相关API函数
+
+### 1.xQueueCreate()
+
+​	队列创建函数
+
+原型
+
+```c
+#define xQueueCreate( uxQueueLength, uxItemSize )    xQueueGenericCreate( ( uxQueueLength ), ( uxItemSize ), ( queueQUEUE_TYPE_BASE ) )
+```
+
+- **uxQueueLength参数**
+
+  队列长度
+
+- **uxItemSize参数**
+
+  单个元素大小(单位:queueQUEUE_TYPE_BASE)
+
+  queueQUEUE_TYPE_BASE在queue.h中定义,一般为unsigned char(一个字节)
+
+- **返回值**
+
+  xQueueHandle 类型
+
+  若为NULL则表示分配失败，否则返回队列句柄。
+
+### 2.xQueueSend()
+
+​	向队列的队尾发送数据
+
+原型
+
+```
+
+```
+
+
+
+## 五,常见问题
+
+### 1.任务莫名其妙被饿死
+
+​	可能是任务堆栈溢出!给相关任务多分配一写内存即可。
+
+## 六,示例
 
 ### 	1.通过一个任务函数创建多个任务(使用任务参数)
 
@@ -390,15 +463,125 @@ void Usart_Send_Task(void*ptr)
 
 **注意:任务参数必须定义为静态变量,通过指针传入任务函数。**
 
-## 四,任务优先级API函数
+### 2.更改任务优先级
 
-### 1.vTaskPrioritySet()
+```c
+#include "stm32f10x.h"
 
-​	可以在调度器运行之后改变任务的优先级。
+#include "bsp_usart.h"
 
-### 2.uxTaskPriorityGet()
+#include "FreeRTOSConfig.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
-​	查询任务优先级。
+void vApplicationIdleHook( void );
+void Usart_Send_Task(void*ptr);
+void Usart_Rx_Task(void*ptr);
 
-## 五,空闲任务
+static TaskHandle_t Task1 = NULL;
+static TaskHandle_t Task2 = NULL;
+
+static uint8_t Send1[] = "Task1\r\n";
+
+int main(void)
+{
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+	BSP_Usart_Init();
+
+	xTaskCreate(
+		Usart_Send_Task,
+		"Task1",
+		32,
+		Send1,
+		6,
+		&Task1
+	);
+	
+	xTaskCreate(
+		Usart_Rx_Task,
+		"Task2",
+		32,
+		NULL,
+		6,
+		&Task2
+	);
+	vTaskStartScheduler();
+	while(1)
+	{
+	}
+}
+
+void Usart_Rx_Task(void*ptr)
+{
+	while(1)
+	{
+		uint8_t*dat;
+		uint8_t Target;
+		dat = Usart_Read(1);
+		if(*dat != 0)
+		{
+			for(uint8_t temp=0;temp<*dat;temp++)
+			{
+				if(*(dat+temp+1) == '\n')
+				{
+					Target = 0;
+					for(uint8_t n=0;n<temp;n++)
+					{
+						Target*=10;
+						Target+=*(dat+n+1) - 0x30;
+					}
+					USART_Push(1,temp+2);
+					printf("Input:%d\r\n",Target);
+					vTaskPrioritySet(Task1,Target);
+					break;
+				}
+			}
+		}
+		vTaskDelay(200/portTICK_RATE_MS);
+	}
+}
+
+void Usart_Send_Task(void*ptr)
+{
+	while(1)
+	{
+		printf("%s",(uint8_t*)ptr);
+		printf("优先级:%d\r\n",uxTaskPriorityGet(NULL));
+		vTaskDelay(200/portTICK_RATE_MS);
+	}
+}
+```
+
+### 3.串口指令截取('\n'为指令结束符,基于自写的bsp_usart)
+
+```c
+void Usart_Rx_Task(void*ptr)
+{
+	while(1)
+	{
+		uint8_t*dat;
+		uint8_t Target;
+		dat = Usart_Read(1);
+		if(*dat != 0)
+		{
+			for(uint8_t temp=0;temp<*dat;temp++)
+			{
+				if(*(dat+temp+1) == '\n')
+				{
+					Target = 0;
+					for(uint8_t n=0;n<temp;n++)
+					{
+						Target*=10;
+						Target+=*(dat+n+1) - 0x30;c
+					}
+					USART_Push(1,temp+2);
+					printf("Input:%d\r\n",Target);
+					break;
+				}
+			}
+		}
+		vTaskDelay(200/portTICK_RATE_MS);
+	}
+}
+```
 
