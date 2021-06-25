@@ -365,6 +365,8 @@ void vTaskPrioritySet( TaskHandle_t xTask,
 
 ​	队列创建函数
 
+​	**在硬件中断中禁止使用这个函数!!**
+
 原型
 
 ```c
@@ -393,11 +395,74 @@ void vTaskPrioritySet( TaskHandle_t xTask,
 
 原型
 
+```c
+#define xQueueSend( xQueue, pvItemToQueue, xTicksToWait ) \
+    xQueueGenericSend( ( xQueue ), ( pvItemToQueue ), ( xTicksToWait ), queueSEND_TO_BACK )
 ```
 
+- **xQueue参数**
+
+  要读取的队列的句柄
+
+- **pvItemToQueue参数**
+
+  要发送的数据的指针(注意大小!)
+
+- **xTicksToWait参数**
+
+  若队列中数据满载,则任务进入阻塞态,等待队列有空余位置,xTicksToWait为最大等待时间。
+
+  如果这个参数设置为portMAX_DELAY,而且定义了INCLUDE_vTaskSuspend为1,则等待没有最大时间限制
+
+- **返回值**
+
+  1. **pdPASS**
+
+     表示成功
+
+  2. **errQUEUE_FULL**
+
+     队列满载
+
+### 3.xQueueReceive()
+
+​	读取队列数据
+
+​	**在硬件中断中禁止使用这个函数!!**
+
+原型
+
+```c
+BaseType_t xQueueReceive( QueueHandle_t xQueue,
+                          void * const pvBuffer,
+                          TickType_t xTicksToWait )
 ```
 
+- **xQueue 参数**
 
+  队列句柄
+
+- **pvBuffer 参数**
+
+  读取到的数据要放入的地址
+
+  *该指针要指向一个静态变量!! static*
+
+- **xTicksToWait 参数**
+
+  若队列为空,任务进入阻塞态,等待队列中有数据进入,xTicksToWait为最大等待时间。
+
+  如果这个参数设置为portMAX_DELAY,而且定义了INCLUDE_vTaskSuspend为1,则等待没有最大时间限制
+
+- **返回值**
+
+  1. **pdPASS**
+
+     成功读取到了数据
+
+  2. **errQUEUE_FULL**
+
+     队列为空
 
 ## 五,常见问题
 
@@ -506,9 +571,7 @@ int main(void)
 		&Task2
 	);
 	vTaskStartScheduler();
-	while(1)
-	{
-	}
+	while(1);
 }
 
 void Usart_Rx_Task(void*ptr)
@@ -560,7 +623,7 @@ void Usart_Rx_Task(void*ptr)
 	while(1)
 	{
 		uint8_t*dat;
-		uint8_t Target;
+		uint8_t cmd;
 		dat = Usart_Read(1);
 		if(*dat != 0)
 		{
@@ -568,11 +631,11 @@ void Usart_Rx_Task(void*ptr)
 			{
 				if(*(dat+temp+1) == '\n')
 				{
-					Target = 0;
+					cmd = 0;
 					for(uint8_t n=0;n<temp;n++)
 					{
-						Target*=10;
-						Target+=*(dat+n+1) - 0x30;c
+						cmd*=10;
+						cmd+=*(dat+n+1) - 0x30;
 					}
 					USART_Push(1,temp+2);
 					printf("Input:%d\r\n",Target);
