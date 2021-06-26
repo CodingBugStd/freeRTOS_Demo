@@ -459,6 +459,11 @@
               <FileType>1</FileType>
               <FilePath>.\USER\stm32f10x_it.c</FilePath>
             </File>
+            <File>
+              <FileName>isr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\isr.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

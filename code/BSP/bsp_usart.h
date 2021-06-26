@@ -35,13 +35,4 @@ void Tx_Flag_Clear(uint8_t USARTx);
 //printf()重定向
 int fputc (int c, FILE *fp);
 
-//中断
-void USART1_IRQHandler(void);
-void USART2_IRQHandler(void);
-void USART3_IRQHandler(void);
-void DMA1_Channel4_IRQHandler(void);
-void DMA1_Channel7_IRQHandler(void);
-void DMA1_Channel2_IRQHandler(void);
-
-
 #endif

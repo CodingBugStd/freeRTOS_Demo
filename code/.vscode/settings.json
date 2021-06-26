@@ -4,6 +4,7 @@
         "freertos.h": "c",
         "task.h": "c",
         "stm32f10x.h": "c",
-        "freertosconfig.h": "c"
+        "freertosconfig.h": "c",
+        "isr.h": "c"
     }
 }

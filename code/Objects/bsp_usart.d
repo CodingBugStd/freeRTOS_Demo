@@ -30,3 +30,15 @@
 .\objects\bsp_usart.o: .\FWLIB\inc\stm32f10x_wwdg.h
 .\objects\bsp_usart.o: .\FWLIB\inc\misc.h
 .\objects\bsp_usart.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\bsp_usart.o: .\freeRTOS\core\include\FreeRTOS.h
+.\objects\bsp_usart.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\bsp_usart.o: .\USER\FreeRTOSConfig.h
+.\objects\bsp_usart.o: .\freeRTOS\core\include\projdefs.h
+.\objects\bsp_usart.o: .\freeRTOS\core\include\portable.h
+.\objects\bsp_usart.o: .\freeRTOS\core\include\deprecated_definitions.h
+.\objects\bsp_usart.o: .\freeRTOS\port\portmacro.h
+.\objects\bsp_usart.o: .\freeRTOS\core\include\mpu_wrappers.h
+.\objects\bsp_usart.o: .\freeRTOS\core\include\semphr.h
+.\objects\bsp_usart.o: .\freeRTOS\core\include\queue.h
+.\objects\bsp_usart.o: .\freeRTOS\core\include\task.h
+.\objects\bsp_usart.o: .\freeRTOS\core\include\list.h

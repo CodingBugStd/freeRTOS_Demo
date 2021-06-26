@@ -12,6 +12,7 @@
 ".\objects\stm32f10x_usart.o"
 ".\objects\main.o"
 ".\objects\stm32f10x_it.o"
+".\objects\isr.o"
 ".\objects\bsp_usart.o"
 ".\objects\port.o"
 ".\objects\heap_4.o"

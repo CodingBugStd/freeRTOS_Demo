@@ -334,7 +334,7 @@ BaseType_t xTaskDelayUntil( TickType_t * const pxPreviousWakeTime,
 
 ### 6.taskYIELD()
 
-​	立刻通知调度器结束当前时间片,不必等到其他能堵塞任务的情况出现。
+​	立刻唤醒调度器,不必等到其他能堵塞任务的情况出现。
 
 ​	**注意:taskYIELD()不能将cpu的使用权交给比该任务低的就绪态任务,taskYIELD()只是放弃该时间片,并没有使任务进入阻塞态!**
 
@@ -469,6 +469,114 @@ BaseType_t xQueueReceive( QueueHandle_t xQueue,
   2. **errQUEUE_FULL**
 
      队列为空
+
+## 五,二值信号量(常用于ISR函数中)
+
+### 1.**vSemaphoreCreateBinary() & xSemaphoreCreateBinary()**
+
+vSemaphoreCreateBinary()已经弃用
+
+```c
+#if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
+    #define vSemaphoreCreateBinary( xSemaphore )                                                                                     \
+    {                                                                                                                                \
+        ( xSemaphore ) = xQueueGenericCreate( ( UBaseType_t ) 1, semSEMAPHORE_QUEUE_ITEM_LENGTH, queueQUEUE_TYPE_BINARY_SEMAPHORE ); \
+        if( ( xSemaphore ) != NULL )                                                                                                 \
+        {                                                                                                                            \
+            ( void ) xSemaphoreGive( ( xSemaphore ) );                                                                               \
+        }                                                                                                                            \
+    }
+#endif
+```
+
+vSemaphoreCreateBinary()采用宏定义的方式,中间使用了xSemaphoreGive()产生了一个二值信号
+
+xSemaphoreCreateBinary()
+
+```c
+#if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
+    #define xSemaphoreCreateBinary()    xQueueGenericCreate( ( UBaseType_t ) 1, semSEMAPHORE_QUEUE_ITEM_LENGTH, queueQUEUE_TYPE_BINARY_SEMAPHORE )
+#endif
+```
+
+相比vSemaphoreCreateBinary()没有在创建时产生二值信号
+
+**vSemaphoreCreateBinary()直接返回xSemaphoreHandle_t，xSemaphoreCreateBinary()需要传入xSemaphoreHandle_t(不是地址,变量本身就是一个指向结构体的指针)**
+
+### 2.xSemaphoreGive() & xSemaphoreGiveFromISR()
+
+​	发送一个信号量
+
+**xSemaphoreGive原型**
+
+```c
+#define xSemaphoreGive( xSemaphore )    xQueueGenericSend( ( QueueHandle_t ) ( xSemaphore ), NULL, semGIVE_BLOCK_TIME, queueSEND_TO_BACK )
+```
+
+- **xSemaphore参数**
+
+  要发送的信号量
+
+- **返回值**
+
+  - **pdPASS**
+  - **pdFALSE**
+
+**xSemaphoreGiveFromISR()原型**
+
+```c
+#define xSemaphoreGiveFromISR( xSemaphore, pxHigherPriorityTaskWoken )    xQueueGiveFromISR( ( QueueHandle_t ) ( xSemaphore ), ( pxHigherPriorityTaskWoken ) )
+```
+
+- **xSemophore参数**
+
+  要发送的信号量
+
+- **pxHigherPriorityTaskWoken参数**
+
+  用于判断是否有优先级更高的任务在等待这个信号量
+
+  - 若被xSemaphoreGiveFromISR()设置成pdTRUE
+
+    有优先级更高的任务解除了阻塞,需要在中断中进行一次上下文切换 - ***taskYIELD()***
+
+- **返回值**
+
+  - **pdPASS**
+
+    调用成功
+
+  - **pdFASLE**
+
+    已有该信号量
+
+### 3.xSemaphoreTake() & xSemaphoreGiveFromISR()
+
+​	任务进入阻塞态,等待(释放)一个信号量
+
+**xSemaphoreTake()原型**
+
+```c
+#define xSemaphoreTake( xSemaphore, xBlockTime )    xQueueSemaphoreTake( ( xSemaphore ), ( xBlockTime ) )
+```
+
+- **xSemophore参数**
+
+  要等待的信号量句柄
+
+- **xBlockTime参数**
+
+  最长等待时间,设置为portMAX_DELAY,并且INCLUDE_vTaskSuspend定义为1,则无最长等待时间。
+
+- **返回值**
+
+  - **pdPASS**
+
+    等待到信号量
+
+  - **pdFALSE**
+
+    未能等待到信号量
 
 ## 五,常见问题
 
@@ -761,3 +869,73 @@ void Usart_Send_Task(void*ptr)
 }
 ```
 
+### 5.ISR中发送信号量
+
+任务函数
+
+```c
+SemaphoreHandle_t Usart_Rx_Flag = NULL;
+QueueHandle_t Usart_Cmd = NULL;
+
+void Usart_Rx_Task(void*ptr)
+{
+	while(1)
+	{
+		uint8_t*dat;
+		xDat Cmd;
+		xSemaphoreTake(Usart_Rx_Flag,portMAX_DELAY);
+		dat = Usart_Read(1);
+		if(*(dat+*dat) == '\n')
+		{
+			uint8_t temp,n;
+			Cmd.TaskPriority = 0;
+			Cmd.TaskDelayTime = 0;
+			for(temp=0;*(dat+temp+1)!=' ';temp++)
+			{
+				Cmd.TaskPriority*=10;
+				Cmd.TaskPriority+=*(dat+temp+1) - 0x30;
+			}
+			for(n=0;*(dat+temp+n+2)!='\n';n++)
+			{
+				Cmd.TaskDelayTime*=10;
+				Cmd.TaskDelayTime+=*(dat+temp+n+2) - 0x30;
+			}
+			USART_Clear(1);
+			xQueueSend(Usart_Cmd,&Cmd,0);
+		}
+	}
+}
+
+void Usart_Send_Task(void*ptr)
+{
+	while(1)
+	{
+		static xDat In = {6,300};
+		xQueueReceive(Usart_Cmd,&In,0);
+		vTaskPrioritySet(NULL,In.TaskPriority);
+		printf("%s\r\nDelay_Time:%d\r\nPriority:%d\r\n",(uint8_t*)ptr,In.TaskDelayTime,uxTaskPriorityGet(NULL));
+		vTaskDelay(In.TaskDelayTime/portTICK_RATE_MS);
+	}
+}
+```
+
+中断
+
+```c
+extern SemaphoreHandle_t Usart_Rx_Flag;
+
+void USART1_IRQHandler(void)
+{
+    BaseType_t temp = pdFALSE;
+    if(USART_GetITStatus(USART1,USART_IT_RXNE) == SET)
+    {
+        Rx_SbufferInput(1,USART_ReceiveData(USART1));
+        xSemaphoreGive(Usart_Rx_Flag);
+        xSemaphoreGiveFromISR(Usart_Rx_Flag,&temp);
+        portEND_SWITCHING_ISR(&temp);
+        USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+    }
+}
+```
+
+**注意:在其他文件里定义的Usart_Rx_Flag不能是静态变量,否则无法通过exturn声明该变量!**
