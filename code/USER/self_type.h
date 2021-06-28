@@ -3,6 +3,7 @@
 
 #include "stm32f10x.h"
 
+//结构体队列测试
 typedef struct
 {
 	uint8_t TaskPriority;

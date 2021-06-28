@@ -474,6 +474,11 @@
               <FileType>1</FileType>
               <FilePath>.\BSP\bsp_usart.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_oled12864.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\bsp_oled12864.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

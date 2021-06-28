@@ -939,3 +939,32 @@ void USART1_IRQHandler(void)
 ```
 
 **注意:在其他文件里定义的Usart_Rx_Flag不能是静态变量,否则无法通过exturn声明该变量!**
+
+### 6.在缓存式串口ISR方式二值信号量
+
+ \* 在串口数据量过大和波特率过高时不建议使用二值信号量直接触发服务
+
+ \* 函数
+
+ \* 通常采用缓存式,中断产生信号量后,由信号量触发缓存函数。当达到某
+
+ \* 个特殊条件(超时,换行...)时在触发服务函数处理数据
+
+```c
+extern SemaphoreHandle_t Usart_Rx_Flag;
+void USART1_IRQHandler(void)
+{
+    BaseType_t temp = pdFALSE;
+    if(USART_GetITStatus(USART1,USART_IT_RXNE) == SET)
+    {
+        Rx_SbufferInput(1,USART_ReceiveData(USART1));
+        if(USART_Rx_Sbuffer[0][USART_Rx_Sbuffer[0][0]+1] == '\n')
+        {
+            xSemaphoreGiveFromISR(Usart_Rx_Flag,&temp);
+            portEND_SWITCHING_ISR(&temp);
+        }
+        USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+    }
+}
+```
+

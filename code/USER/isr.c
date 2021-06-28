@@ -8,8 +8,12 @@
 
 /***************中断***********************/
 
+/************************************************************
+ * 在串口数据量过大和波特率过高时不建议使用二值信号量直接触发服务
+ * 函数
+ * 通常采用缓存式,中断产生信号量后,由信号量触发缓存函数。当达到某
+ * 个特殊条件(超时,换行...)时在触发服务函数处理数据
 extern SemaphoreHandle_t Usart_Rx_Flag;
-
 void USART1_IRQHandler(void)
 {
     BaseType_t temp = pdFALSE;
@@ -18,6 +22,23 @@ void USART1_IRQHandler(void)
         Rx_SbufferInput(1,USART_ReceiveData(USART1));
         xSemaphoreGiveFromISR(Usart_Rx_Flag,&temp);
         portEND_SWITCHING_ISR(&temp);
+        USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+    }
+}
+************************************************************/
+
+extern SemaphoreHandle_t Usart_Rx_Flag;
+void USART1_IRQHandler(void)
+{
+    BaseType_t temp = pdFALSE;
+    if(USART_GetITStatus(USART1,USART_IT_RXNE) == SET)
+    {
+        Rx_SbufferInput(1,USART_ReceiveData(USART1));
+        if(*(Usart_Read(1) + *Usart_Read(1))=='\n')
+        {
+            xSemaphoreGiveFromISR(Usart_Rx_Flag,&temp);
+            portEND_SWITCHING_ISR(&temp);
+        }
         USART_ClearITPendingBit(USART1,USART_IT_RXNE);
     }
 }

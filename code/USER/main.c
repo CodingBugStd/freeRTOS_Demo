@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "self_type.h"
 #include "bsp_usart.h"
+#include "bsp_oled12864.h"
 
 #include "FreeRTOSConfig.h"
 #include "FreeRTOS.h"
@@ -37,7 +38,7 @@ int main(void)
 	xTaskCreate(
 		Usart_Rx_Task,
 		"Task2",
-		32,
+		64,
 		NULL,
 		6,
 		&Task2
@@ -57,24 +58,22 @@ void Usart_Rx_Task(void*ptr)
 		xDat Cmd;
 		xSemaphoreTake(Usart_Rx_Flag,portMAX_DELAY);
 		dat = Usart_Read(1);
-		if(*(dat+*dat) == '\n')
+		uint8_t temp,n;
+		Cmd.TaskDelayTime = 0;
+		Cmd.TaskPriority = 0;
+		for(temp=0;*(dat+temp+1)!=' ';temp++)
 		{
-			uint8_t temp,n;
-			Cmd.TaskPriority = 0;
-			Cmd.TaskDelayTime = 0;
-			for(temp=0;*(dat+temp+1)!=' ';temp++)
-			{
-				Cmd.TaskPriority*=10;
-				Cmd.TaskPriority+=*(dat+temp+1) - 0x30;
-			}
-			for(n=0;*(dat+temp+n+2)!='\n';n++)
-			{
-				Cmd.TaskDelayTime*=10;
-				Cmd.TaskDelayTime+=*(dat+temp+n+2) - 0x30;
-			}
-			USART_Clear(1);
-			xQueueSend(Usart_Cmd,&Cmd,0);
+			Cmd.TaskDelayTime*=10;
+			Cmd.TaskDelayTime+=*(dat+temp+1)-0x30;
 		}
+		for(n=0;*(dat+temp+n+2)!='\n';n++)
+		{
+			Cmd.TaskPriority*=10;
+			Cmd.TaskPriority+=*(dat+temp+n+2)-0x30;
+		}
+		USART_Clear(1);
+		xQueueSend(Usart_Cmd,&Cmd,0);
+		printf("Task2\r\n");
 	}
 }
 
@@ -89,3 +88,4 @@ void Usart_Send_Task(void*ptr)
 		vTaskDelay(In.TaskDelayTime/portTICK_RATE_MS);
 	}
 }
+
