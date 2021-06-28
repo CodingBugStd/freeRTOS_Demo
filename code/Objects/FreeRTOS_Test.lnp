@@ -14,6 +14,7 @@
 ".\objects\stm32f10x_it.o"
 ".\objects\isr.o"
 ".\objects\bsp_usart.o"
+".\objects\bsp_oled12864.o"
 ".\objects\port.o"
 ".\objects\heap_4.o"
 ".\objects\croutine.o"

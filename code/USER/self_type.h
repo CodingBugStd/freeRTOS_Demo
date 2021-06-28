@@ -3,11 +3,11 @@
 
 #include "stm32f10x.h"
 
-//结构体队列测试
-typedef struct
+//串口发送任务信息结构体
+typedef struct 
 {
 	uint8_t TaskPriority;
 	uint16_t TaskDelayTime;
-}xDat;
+}Usart_Send_TaskDat;
 
 #endif
