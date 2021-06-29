@@ -44,6 +44,7 @@ void System_Init_Task(void*ptr)
 	//硬件初始化和中断分组
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 	BSP_Usart_Init();
+	BSP_OLED12864_Init();
 
 	//创建串口接收信号量和串口指令队列
 	Usart_Rx_Cmd = xQueueCreate(4,sizeof(Usart_Send_TaskDat));

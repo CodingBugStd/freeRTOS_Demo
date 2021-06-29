@@ -264,7 +264,7 @@ I (.\FWLIB\inc\stm32f10x_spi.h)(0x4D783BB4)
 I (.\FWLIB\inc\stm32f10x_tim.h)(0x4D783BB4)
 I (.\FWLIB\inc\stm32f10x_wwdg.h)(0x4D783BB4)
 I (.\FWLIB\inc\misc.h)(0x4D783BB4)
-F (.\USER\main.c)(0x60DA0CFF)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\CMSIS -I .\FWLIB\inc -I .\FWLIB\src -I .\USER -I .\BSP -I .\freeRTOS\core -I .\freeRTOS\core\include -I .\freeRTOS\port -I .\freeRTOS\port\MemMang-Ie:\DataFile\Code\STM32Code\FreeRTOS_Demo\code\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.0.2\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD-o .\objects\main.o --depend .\objects\main.d)
+F (.\USER\main.c)(0x60DB06E3)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\CMSIS -I .\FWLIB\inc -I .\FWLIB\src -I .\USER -I .\BSP -I .\freeRTOS\core -I .\freeRTOS\core\include -I .\freeRTOS\port -I .\freeRTOS\port\MemMang-Ie:\DataFile\Code\STM32Code\FreeRTOS_Demo\code\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.0.2\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD-o .\objects\main.o --depend .\objects\main.d)
 I (.\CMSIS\stm32f10x.h)(0x4D783CB4)
 I (.\CMSIS\core_cm3.h)(0x4D523B58)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E3E26)
@@ -294,9 +294,9 @@ I (.\FWLIB\inc\stm32f10x_usart.h)(0x4D783BB4)
 I (.\FWLIB\inc\stm32f10x_wwdg.h)(0x4D783BB4)
 I (.\FWLIB\inc\misc.h)(0x4D783BB4)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x574E3E26)
-I (USER\self_type.h)(0x60DA0844)
+I (USER\self_type.h)(0x60DB20B3)
 I (.\BSP\bsp_usart.h)(0x60D9B212)
-I (.\BSP\bsp_oled12864.h)(0x60D9DFC7)
+I (.\BSP\bsp_oled12864.h)(0x60DB2F20)
 I (USER\FreeRTOSConfig.h)(0x60D503EB)
 I (.\freeRTOS\core\include\FreeRTOS.h)(0x60B26037)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x574E3E26)
@@ -383,6 +383,11 @@ I (.\freeRTOS\core\include\queue.h)(0x5FD90663)
 I (.\freeRTOS\core\include\task.h)(0x5FD90663)
 I (.\freeRTOS\core\include\list.h)(0x5FD90663)
 I (.\freeRTOS\core\include\semphr.h)(0x5FD90663)
+F (.\USER\soft_delay.c)(0x60DB1B08)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\CMSIS -I .\FWLIB\inc -I .\FWLIB\src -I .\USER -I .\BSP -I .\freeRTOS\core -I .\freeRTOS\core\include -I .\freeRTOS\port -I .\freeRTOS\port\MemMang-Ie:\DataFile\Code\STM32Code\FreeRTOS_Demo\code\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.0.2\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD-o .\objects\soft_delay.o --depend .\objects\soft_delay.d)
+I (USER\soft_delay.h)(0x60DB1AFF)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x574E3E26)
+F (.\USER\self_type.h)(0x60DB20B3)()
+F (.\USER\FreeRTOSConfig.h)(0x60D503EB)()
 F (.\BSP\bsp_usart.c)(0x60D6FB2F)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\CMSIS -I .\FWLIB\inc -I .\FWLIB\src -I .\USER -I .\BSP -I .\freeRTOS\core -I .\freeRTOS\core\include -I .\freeRTOS\port -I .\freeRTOS\port\MemMang-Ie:\DataFile\Code\STM32Code\FreeRTOS_Demo\code\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.0.2\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD-o .\objects\bsp_usart.o --depend .\objects\bsp_usart.d)
 I (BSP\bsp_usart.h)(0x60D9B212)
 I (.\CMSIS\stm32f10x.h)(0x4D783CB4)
@@ -426,8 +431,8 @@ I (.\freeRTOS\core\include\semphr.h)(0x5FD90663)
 I (.\freeRTOS\core\include\queue.h)(0x5FD90663)
 I (.\freeRTOS\core\include\task.h)(0x5FD90663)
 I (.\freeRTOS\core\include\list.h)(0x5FD90663)
-F (.\BSP\bsp_oled12864.c)(0x60D9DFC8)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\CMSIS -I .\FWLIB\inc -I .\FWLIB\src -I .\USER -I .\BSP -I .\freeRTOS\core -I .\freeRTOS\core\include -I .\freeRTOS\port -I .\freeRTOS\port\MemMang-Ie:\DataFile\Code\STM32Code\FreeRTOS_Demo\code\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.0.2\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD-o .\objects\bsp_oled12864.o --depend .\objects\bsp_oled12864.d)
-I (BSP\bsp_oled12864.h)(0x60D9DFC7)
+F (.\BSP\bsp_oled12864.c)(0x60DB3041)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\CMSIS -I .\FWLIB\inc -I .\FWLIB\src -I .\USER -I .\BSP -I .\freeRTOS\core -I .\freeRTOS\core\include -I .\freeRTOS\port -I .\freeRTOS\port\MemMang-Ie:\DataFile\Code\STM32Code\FreeRTOS_Demo\code\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.0.2\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD-o .\objects\bsp_oled12864.o --depend .\objects\bsp_oled12864.d)
+I (BSP\bsp_oled12864.h)(0x60DB2F20)
 I (.\CMSIS\stm32f10x.h)(0x4D783CB4)
 I (.\CMSIS\core_cm3.h)(0x4D523B58)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E3E26)
@@ -456,6 +461,9 @@ I (.\FWLIB\inc\stm32f10x_tim.h)(0x4D783BB4)
 I (.\FWLIB\inc\stm32f10x_usart.h)(0x4D783BB4)
 I (.\FWLIB\inc\stm32f10x_wwdg.h)(0x4D783BB4)
 I (.\FWLIB\inc\misc.h)(0x4D783BB4)
+I (.\USER\self_type.h)(0x60DB20B3)
+I (.\USER\soft_delay.h)(0x60DB1AFF)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x574E3E26)
 F (.\freeRTOS\port\port.c)(0x5FD90663)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\CMSIS -I .\FWLIB\inc -I .\FWLIB\src -I .\USER -I .\BSP -I .\freeRTOS\core -I .\freeRTOS\core\include -I .\freeRTOS\port -I .\freeRTOS\port\MemMang-Ie:\DataFile\Code\STM32Code\FreeRTOS_Demo\code\RTE-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.0.2\Device\Include-IC:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="521" -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD-o .\objects\port.o --depend .\objects\port.d)
 I (.\freeRTOS\core\include\FreeRTOS.h)(0x60B26037)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x574E3E26)

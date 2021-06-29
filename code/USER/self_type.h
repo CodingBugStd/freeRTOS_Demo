@@ -10,4 +10,11 @@ typedef struct
 	uint16_t TaskDelayTime;
 }Usart_Send_TaskDat;
 
+//MCU引脚
+typedef struct
+{
+    uint16_t Pin;
+    GPIO_TypeDef*GPOP;
+}Pin;
+
 #endif

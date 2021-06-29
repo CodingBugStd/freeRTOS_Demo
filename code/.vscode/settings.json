@@ -5,6 +5,7 @@
         "task.h": "c",
         "stm32f10x.h": "c",
         "freertosconfig.h": "c",
-        "isr.h": "c"
+        "isr.h": "c",
+        "bsp_oled12864.h": "c"
     }
 }

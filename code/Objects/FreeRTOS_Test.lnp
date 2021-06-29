@@ -13,6 +13,7 @@
 ".\objects\main.o"
 ".\objects\stm32f10x_it.o"
 ".\objects\isr.o"
+".\objects\soft_delay.o"
 ".\objects\bsp_usart.o"
 ".\objects\bsp_oled12864.o"
 ".\objects\port.o"

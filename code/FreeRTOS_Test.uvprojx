@@ -464,6 +464,21 @@
               <FileType>1</FileType>
               <FilePath>.\USER\isr.c</FilePath>
             </File>
+            <File>
+              <FileName>soft_delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USER\soft_delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>self_type.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\USER\self_type.h</FilePath>
+            </File>
+            <File>
+              <FileName>FreeRTOSConfig.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\USER\FreeRTOSConfig.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
