@@ -14,16 +14,23 @@
 #define System_Init_Task_Stack	64
 #define Usart_Send_Task_Stack	64
 #define Usart_Rx_Task_Stack		64
+#define Cmd_Respond_Task_Stack	64
+#define OLED_Refresh_Task_Stack	64
 
-void System_Init_Task(void*ptr);
-void Usart_Send_Task(void*ptr);
-void Usart_Rx_Task(void*ptr);
+void System_Init_Task(void*ptr);		//初始化
+void Usart_Send_Task(void*ptr);			//串口发送任务
+void Usart_Rx_Task(void*ptr);			//串口接收任务
+void OLED_Refresh_Task(void*ptr);		//OLED屏幕刷新
+void Cmd_Respond_Task(void*ptr);		//用户指令处理任务
 
 TaskHandle_t Init_TaskHandel = NULL;
 TaskHandle_t Usart_Send_TaskHandle = NULL;
 TaskHandle_t Usart_Rx_TaskHandle = NULL;
+TaskHandle_t OLED_Refresh_TaskHandle = NULL;
+TaskHandle_t Cmd_Respond_TaskHandle = NULL;
 SemaphoreHandle_t Usart_Rx_Flag = NULL;
 QueueHandle_t Usart_Rx_Cmd = NULL;
+QueueHandle_t User_Cmd_Queue = NULL;
 
 int main(void)
 {
@@ -49,6 +56,7 @@ void System_Init_Task(void*ptr)
 	//创建串口接收信号量和串口指令队列
 	Usart_Rx_Cmd = xQueueCreate(4,sizeof(Usart_Send_TaskDat));
 	Usart_Rx_Flag = xSemaphoreCreateBinary();
+	User_Cmd_Queue = xQueueCreate(12,sizeof(User_Cmd));
 
 	//创建任务
 	xTaskCreate(
@@ -82,39 +90,21 @@ void System_Init_Task(void*ptr)
 
 void Usart_Rx_Task(void*ptr)
 {
-	while(1)
-	{
-		uint8_t*dat;
-		Usart_Send_TaskDat Cmd;
-		xSemaphoreTake(Usart_Rx_Flag,portMAX_DELAY);
-		dat = Usart_Read(1);
-		uint8_t temp,n;
-		Cmd.TaskDelayTime = 0;
-		Cmd.TaskPriority = 0;
-		for(temp=0;*(dat+temp+1)!=' ';temp++)
-		{
-			Cmd.TaskDelayTime*=10;
-			Cmd.TaskDelayTime+=*(dat+temp+1)-0x30;
-		}
-		for(n=0;*(dat+temp+n+2)!='\n';n++)
-		{
-			Cmd.TaskPriority*=10;
-			Cmd.TaskPriority+=*(dat+temp+n+2)-0x30;
-		}
-		USART_Clear(1);
-		xQueueSend(Usart_Rx_Cmd,&Cmd,0);
-	}
+	while(1);
+}
+
+void Cmd_Respond_Task(void*ptr)
+{
+	while(1);
+}
+
+void OLED_Refresh_Task(void*ptr)
+{
+	while(1);
 }
 
 void Usart_Send_Task(void*ptr)
 {
-	while(1)
-	{
-		static Usart_Send_TaskDat In = {6,300};
-		xQueueReceive(Usart_Rx_Cmd,&In,0);
-		vTaskPrioritySet(NULL,In.TaskPriority);
-		printf("%s\r\nDelay_Time:%d\r\nPriority:%d\r\n",(uint8_t*)ptr,In.TaskDelayTime,uxTaskPriorityGet(NULL));
-		vTaskDelay(In.TaskDelayTime/portTICK_RATE_MS);
-	}
+	while(1);
 }
 

@@ -4,20 +4,34 @@
 #include "stm32f10x.h"
 #include "self_type.h"
 
+#define OLED12864_4Pin_SPI   1
+
+/*************************************
+ * OLED12864 7_Pin SPI BSP
+ * stm32f103zet6
+ * 注意缓存定义的上下与硬件上下相反
+ *                  2021/7/1 庞碧璋
+*************************************/
+
 //硬件相关宏定义
-#define OLED_D0_Pin     GPIO_Pin_13
+#define OLED_D0_Pin     GPIO_Pin_9
 #define OLED_D0_GPIO    GPIOD
-#define OLED_D1_Pin     GPIO_Pin_15
+#define OLED_D1_Pin     GPIO_Pin_11
 #define OLED_D1_GPIO    GPIOD
-#define OLED_RES_Pin    GPIO_Pin_3
-#define OLED_RES_GPIO   GPIOG
-#define OLED_DC_Pin     GPIO_Pin_5
-#define OLED_DC_GPIO    GPIOG
-#define OLED_CS_Pin     GPIO_Pin_7
+#define OLED_RES_Pin    GPIO_Pin_13
+#define OLED_RES_GPIO   GPIOD
+#define OLED_DC_Pin     GPIO_Pin_15
+#define OLED_DC_GPIO    GPIOD
+#define OLED_CS_Pin     GPIO_Pin_3
 #define OLED_CS_GPIO    GPIOG
 
 //OLED模式
-#ifndef OLED_IIC
+#if OLED12864_4Pin_SPI == 1
+    #define OLED_SCLK_Pin   OLED_D0_Pin
+    #define OLED_SCLK_GPIO  OLED_D0_GPIO
+    #define OLED_SDIN_Pin   OLED_D1_Pin
+    #define OLED_SCIN_GPIO  OLED_D1_GPIO
+#elif OLED12864_3Pin_SPI == 1
     #define OLED_SCLK_Pin   OLED_D0_Pin
     #define OLED_SCLK_GPIO  OLED_D0_GPIO
     #define OLED_SDIN_Pin   OLED_D1_Pin
@@ -42,6 +56,12 @@ static Pin OLED_Pin[5] = {
 #define OLED_DATA   1
 
 //OLED12864缓存
+/************************************************
+ * [paeg][x]
+ * 一个元素保函8像素点信息
+ * 在屏幕上,Bit0~Bit7自上向下排列 高位在下
+ * 在缓存中,Bit0~Bit7自下向上(方便处理) 高位在上
+************************************************/
 static uint8_t OLED12864_Sbuffer[8][128];
 //OLED_初始化指令
 static uint8_t OLED12864_InitCmd[28] = {
@@ -58,17 +78,19 @@ void OLED12864_Hard_Reset(void);
 
 void OLED12864_Set_Bit(uint8_t bit);
 void OLED12864_Reset_Bit(uint8_t bit);
-void OLED12864_Write_Byte(uint8_t dat,uint8_t cmd);
-void OLED12864_Write_NumByte(uint8_t*dat,uint8_t len,uint8_t cmd);
+//因为 定义的缓存高低位 与 硬件高低位 相反
+//所以 将命令与数据的发送函数分离,方便操作
+//void OLED12864_Send_Byte(uint8_t dat,uint8_t cmd)
+void OLED12864_Send_Cmd(uint8_t dat);
+void OLED12864_Send_Data(uint8_t dat);
+void OLED12864_Send_NumByte(uint8_t*dat,uint8_t len,uint8_t cmd);
 
 void OLED12864_Refresh(void);
-void OLED12864_Draw_Point(uint8_t x,uint8_t y);
-void OLED12864_Draw_Img(uint8_t x,uint8_t y,uint8_t len,uint8_t hight,uint8_t*img);
-void OLED12864_Show_Char(uint8_t x,uint8_t y,uint8_t chr,uint8_t size);
-void OLED12864_Show_String(uint8_t x,uint8_t y,uint8_t*str,uint8_t len,uint8_t size);
-void OLED12864_Show_Num(uint8_t x,uint8_t y,int num,uint8_t size);
+void OLED12864_Set_Position(uint8_t page,uint8_t x);
 void OLED12864_Clear(void);
-void OLED12864_Move(int xlen,int ylen);
 
+void OLED12864_Draw_Point(uint8_t x,uint8_t y);
+void OLED12864_Draw_Block(uint8_t x,uint8_t y,uint8_t len,uint8_t hight,uint8_t*dat);
+void OLED12864_Clear_Block(uint8_t x,uint8_t y,uint8_t len,uint8_t hight);
 
 #endif
