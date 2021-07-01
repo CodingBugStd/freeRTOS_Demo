@@ -41,7 +41,7 @@ void OLED12864_Clear(void)
     for(page=0;page<8;page++)
     {
         for(x=0;x<128;x++)
-            OLED12864_Sbuffer[page][x] = 0x01;
+            OLED12864_Sbuffer[page][x] = 0xff;
     }
     OLED12864_Refresh();
 }
@@ -123,8 +123,37 @@ void OLED12864_Reset_Bit(uint8_t bit)
     GPIO_ResetBits(OLED_Pin[bit].GPIO,OLED_Pin[bit].Pin);
 }
 
-void OLED12864_Draw_Point(uint8_t x,uint8_t y)
+void OLED12864_Draw_Point(uint8_t x,uint8_t y,uint8_t bit)
 {
-    
+    if(y > y_MAX-1 || x > x_MAX-1)
+        return;
+    uint8_t page = y/8;
+    uint8_t col = y%8;
+    if(bit)
+        OLED12864_Sbuffer[page][x] |= (0x80>>col);
+    else
+        OLED12864_Sbuffer[page][x] &= ~(0x80>>col);
 }
 
+void OLED12864_Clear_PageBlock(uint8_t page,uint8_t x,uint8_t len)
+{
+    uint8_t sx = x+len;
+    if(sx > x_MAX-1 || page > page_MAX-1)
+        return;
+    for(uint8_t temp=0;temp<len;temp++)
+        OLED12864_Sbuffer[page][temp+x] = 0x00;
+}
+
+void OLED12864_Clear_Page(uint8_t page)
+{
+    OLED12864_Clear_PageBlock(page,0,128);
+}
+
+void OLED12864_Draw_PageBlock(uint8_t page,uint8_t x,uint8_t len,uint8_t*dat)
+{
+    for(uint8_t temp=0;temp<len;temp++)
+    {
+        OLED12864_Sbuffer[page][x+temp] = *dat;
+        dat++;
+    }
+}

@@ -15,7 +15,7 @@
 #define Usart_Send_Task_Stack	64
 #define Usart_Rx_Task_Stack		64
 #define Cmd_Respond_Task_Stack	64
-#define OLED_Refresh_Task_Stack	64
+#define OLED_Refresh_Task_Stack	24
 
 void System_Init_Task(void*ptr);		//初始化
 void Usart_Send_Task(void*ptr);			//串口发送任务
@@ -52,6 +52,9 @@ void System_Init_Task(void*ptr)
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 	BSP_Usart_Init();
 	BSP_OLED12864_Init();
+
+	OLED12864_Clear_PageBlock(1,8,8);
+	OLED12864_Refresh();
 
 	//创建串口接收信号量和串口指令队列
 	Usart_Rx_Cmd = xQueueCreate(4,sizeof(Usart_Send_TaskDat));
@@ -100,7 +103,13 @@ void Cmd_Respond_Task(void*ptr)
 
 void OLED_Refresh_Task(void*ptr)
 {
-	while(1);
+	TickType_t time;
+	time = xTaskGetTickCount();
+	while(1)
+	{
+		OLED12864_Refresh();
+		xTaskDelayUntil(&time,16/portTICK_RATE_MS);
+	}
 }
 
 void Usart_Send_Task(void*ptr)

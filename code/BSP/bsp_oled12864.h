@@ -10,6 +10,7 @@
  * OLED12864 7_Pin SPI BSP
  * stm32f103zet6
  * 注意缓存定义的上下与硬件上下相反
+ * 定义左上为x0 y0
  *                  2021/7/1 庞碧璋
 *************************************/
 
@@ -24,6 +25,9 @@
 #define OLED_DC_GPIO    GPIOD
 #define OLED_CS_Pin     GPIO_Pin_3
 #define OLED_CS_GPIO    GPIOG
+#define x_MAX           128
+#define y_MAX           64
+#define page_MAX        8
 
 //OLED模式
 #if OLED12864_4Pin_SPI == 1
@@ -89,8 +93,13 @@ void OLED12864_Refresh(void);
 void OLED12864_Set_Position(uint8_t page,uint8_t x);
 void OLED12864_Clear(void);
 
-void OLED12864_Draw_Point(uint8_t x,uint8_t y);
-void OLED12864_Draw_Block(uint8_t x,uint8_t y,uint8_t len,uint8_t hight,uint8_t*dat);
-void OLED12864_Clear_Block(uint8_t x,uint8_t y,uint8_t len,uint8_t hight);
+void OLED12864_Draw_Point(uint8_t x,uint8_t y,uint8_t bit);
+void OLED12864_Clear_PageBlock(uint8_t page,uint8_t x,uint8_t len);
+void OLED12864_Clear_Page(uint8_t page);
+void OLED12864_Draw_PageBlock(uint8_t page,uint8_t x,uint8_t len,uint8_t*dat);
+
+void OLED12864_Show_Char(uint8_t page,uint8_t x,uint8_t chr,uint8_t size);
+void OLED12864_Show_String(uint8_t page,uint8_t x,uint8_t*str,uint8_t size);
+void OLED12864_Show_Num(uint8_t page,uint8_t x,int num,uint8_t size);
 
 #endif
