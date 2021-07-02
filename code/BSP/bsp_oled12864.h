@@ -4,8 +4,6 @@
 #include "stm32f10x.h"
 #include "self_type.h"
 
-#define OLED12864_4Pin_SPI   1
-
 /*************************************
  * OLED12864 7_Pin SPI BSP
  * stm32f103zet6
@@ -30,6 +28,8 @@
 #define page_MAX        8
 
 //OLED模式
+#define OLED12864_4Pin_SPI  1   //使用4线SPI通讯
+#define USE_POINT_CRT       1   //使用像素点级别操作
 #if OLED12864_4Pin_SPI == 1
     #define OLED_SCLK_Pin   OLED_D0_Pin
     #define OLED_SCLK_GPIO  OLED_D0_GPIO
@@ -59,8 +59,8 @@ static Pin OLED_Pin[5] = {
 #define OLED_CMD    0
 #define OLED_DATA   1
 
-//OLED12864缓存
 /************************************************
+ * OLED12864缓存
  * [paeg][x]
  * 一个元素保函8像素点信息
  * 在屏幕上,Bit0~Bit7自上向下排列 高位在下
@@ -76,27 +76,37 @@ static uint8_t OLED12864_InitCmd[28] = {
     0x14,0xa4,0xa6,0xaf
 };
 
+//初始化
 void BSP_OLED12864_Init(void);
 void OLED12864_GPIO_Init(void);
 void OLED12864_Hard_Reset(void);
 
 void OLED12864_Set_Bit(uint8_t bit);
 void OLED12864_Reset_Bit(uint8_t bit);
-//因为 定义的缓存高低位 与 硬件高低位 相反
-//所以 将命令与数据的发送函数分离,方便操作
-//void OLED12864_Send_Byte(uint8_t dat,uint8_t cmd)
 void OLED12864_Send_Cmd(uint8_t dat);
 void OLED12864_Send_Data(uint8_t dat);
 void OLED12864_Send_NumByte(uint8_t*dat,uint8_t len,uint8_t cmd);
-
 void OLED12864_Refresh(void);
 void OLED12864_Set_Position(uint8_t page,uint8_t x);
+void OLED12864_Clear_Sbuffer(void);
 void OLED12864_Clear(void);
+//因为 定义的缓存高低位 与 硬件高低位 相反
+//所以 将命令与数据的发送函数分离,方便操作
+//void OLED12864_Send_Byte(uint8_t dat,uint8_t cmd)
 
+#if USE_POINT_CRT == 1
+//以单个像素点为单位的图形操作
 void OLED12864_Draw_Point(uint8_t x,uint8_t y,uint8_t bit);
+void OLED12864_Draw_Line(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2);
+void OLED12864_Draw_Rect(uint8_t x,uint8_t y,uint8_t len,uint8_t hight);
+//*img 采用列行式
+void OLED12864_Draw_Img(uint8_t x,uint8_t y,uint8_t len,uint8_t hight,uint8_t*img);
+#endif
+
+//y坐标位置和高度都以page为单位的图形操作
+void OLED12864_Draw_PageBlock(uint8_t page,uint8_t x,uint8_t len,uint8_t*dat);
 void OLED12864_Clear_PageBlock(uint8_t page,uint8_t x,uint8_t len);
 void OLED12864_Clear_Page(uint8_t page);
-void OLED12864_Draw_PageBlock(uint8_t page,uint8_t x,uint8_t len,uint8_t*dat);
 
 void OLED12864_Show_Char(uint8_t page,uint8_t x,uint8_t chr,uint8_t size);
 void OLED12864_Show_String(uint8_t page,uint8_t x,uint8_t*str,uint8_t size);

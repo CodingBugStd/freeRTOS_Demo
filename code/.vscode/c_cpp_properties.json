@@ -12,6 +12,7 @@
                 "e:\\DataFile\\Code\\STM32Code\\FreeRTOS_Demo\\code\\freeRTOS\\core\\include",
                 "e:\\DataFile\\Code\\STM32Code\\FreeRTOS_Demo\\code\\freeRTOS\\port",
                 "e:\\DataFile\\Code\\STM32Code\\FreeRTOS_Demo\\code\\freeRTOS\\port\\MemMang",
+                "e:\\DataFile\\Code\\STM32Code\\FreeRTOS_Demo\\code\\LIB",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include\\rw"
             ],

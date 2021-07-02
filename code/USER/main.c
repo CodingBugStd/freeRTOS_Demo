@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include "self_type.h"
+#include "soft_delay.h"
 #include "bsp_usart.h"
 #include "bsp_oled12864.h"
 
@@ -11,6 +12,8 @@
 #include "task.h"
 #include "semphr.h"
 
+#include "Asoul_bmp.h"
+
 #define System_Init_Task_Stack	64
 #define Usart_Send_Task_Stack	64
 #define Usart_Rx_Task_Stack		64
@@ -18,19 +21,12 @@
 #define OLED_Refresh_Task_Stack	24
 
 void System_Init_Task(void*ptr);		//初始化
-void Usart_Send_Task(void*ptr);			//串口发送任务
-void Usart_Rx_Task(void*ptr);			//串口接收任务
 void OLED_Refresh_Task(void*ptr);		//OLED屏幕刷新
-void Cmd_Respond_Task(void*ptr);		//用户指令处理任务
+void Line_Move_Task(void*ptr);			//直线刷新
 
-TaskHandle_t Init_TaskHandel = NULL;
-TaskHandle_t Usart_Send_TaskHandle = NULL;
-TaskHandle_t Usart_Rx_TaskHandle = NULL;
+TaskHandle_t SystemInit_TaskHandle = NULL;
 TaskHandle_t OLED_Refresh_TaskHandle = NULL;
-TaskHandle_t Cmd_Respond_TaskHandle = NULL;
-SemaphoreHandle_t Usart_Rx_Flag = NULL;
-QueueHandle_t Usart_Rx_Cmd = NULL;
-QueueHandle_t User_Cmd_Queue = NULL;
+TaskHandle_t Line_Move_TaskHandle = NULL;
 
 int main(void)
 {
@@ -40,9 +36,10 @@ int main(void)
 		System_Init_Task_Stack,
 		NULL,
 		15,
-		&Init_TaskHandel
+		&SystemInit_TaskHandle
 	);
 	vTaskStartScheduler();
+
 	while(1);
 }
 
@@ -53,67 +50,67 @@ void System_Init_Task(void*ptr)
 	BSP_Usart_Init();
 	BSP_OLED12864_Init();
 
-	OLED12864_Clear_PageBlock(1,8,8);
+	OLED12864_Draw_Img(0,0,64,64,gImage_a_soul_bmp);
+	OLED12864_Draw_Rect(0,0,127,63);
 	OLED12864_Refresh();
 
-	//创建串口接收信号量和串口指令队列
-	Usart_Rx_Cmd = xQueueCreate(4,sizeof(Usart_Send_TaskDat));
-	Usart_Rx_Flag = xSemaphoreCreateBinary();
-	User_Cmd_Queue = xQueueCreate(12,sizeof(User_Cmd));
+	soft_delay_ms(1000);
 
 	//创建任务
 	xTaskCreate(
-		Usart_Send_Task,
-		"UsartSend",
-		Usart_Send_Task_Stack,
-		"Usart_Send_Task",
-		4,
-		&Usart_Send_TaskHandle
+		OLED_Refresh_Task,
+		"OLED",
+		32,
+		NULL,
+		15,
+		&OLED_Refresh_TaskHandle
 	);
 	xTaskCreate(
-		Usart_Rx_Task,
-		"UsartRx",
-		Usart_Rx_Task_Stack,
+		Line_Move_Task,
+		"Move",
+		32,
 		NULL,
 		10,
-		&Usart_Rx_TaskHandle
+		&Line_Move_TaskHandle
 	);
 
-	//检查是否初始化成功
-	if(Usart_Rx_Flag!=NULL && Usart_Rx_Cmd!=NULL && Usart_Send_TaskHandle!=NULL && Usart_Rx_TaskHandle!=NULL)
+	if(OLED_Refresh_TaskHandle==NULL || Line_Move_TaskHandle==0)
 	{
-		printf("System_Init\r\n");
-		vTaskDelete(NULL);
-	}else
-	{
-		printf("SystemInit_Flase\r\n");
+		printf("Erro\r\n");
 		while(1);
 	}
-}
-
-void Usart_Rx_Task(void*ptr)
-{
-	while(1);
-}
-
-void Cmd_Respond_Task(void*ptr)
-{
-	while(1);
+	vTaskDelete(NULL);
 }
 
 void OLED_Refresh_Task(void*ptr)
 {
-	TickType_t time;
+	static TickType_t time;
 	time = xTaskGetTickCount();
 	while(1)
 	{
 		OLED12864_Refresh();
-		xTaskDelayUntil(&time,16/portTICK_RATE_MS);
+		vTaskDelayUntil(&time,20/portTICK_RATE_MS);
 	}
 }
 
-void Usart_Send_Task(void*ptr)
+void Line_Move_Task(void*prt)
 {
-	while(1);
+	static TickType_t time;
+	time = xTaskGetTickCount();
+	while(1)
+	{
+		static uint8_t sx = 0;
+		static uint8_t sy = 0;
+		OLED12864_Clear_Sbuffer();
+		OLED12864_Draw_Line(sx,0,sx,63);
+		OLED12864_Draw_Line(0,sy,127,sy);
+		sx+=2;
+		sy++;
+		if(sx>=127)
+			sx = 0;
+		if(sy>=63
+		)
+			sy = 0;
+		vTaskDelayUntil(&time,50/portTICK_RATE_MS);
+	}
 }
-

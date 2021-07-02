@@ -30,6 +30,7 @@
 .\objects\main.o: .\FWLIB\inc\misc.h
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\main.o: USER\self_type.h
+.\objects\main.o: USER\soft_delay.h
 .\objects\main.o: .\BSP\bsp_usart.h
 .\objects\main.o: .\BSP\bsp_oled12864.h
 .\objects\main.o: USER\FreeRTOSConfig.h
@@ -44,3 +45,4 @@
 .\objects\main.o: .\freeRTOS\core\include\task.h
 .\objects\main.o: .\freeRTOS\core\include\list.h
 .\objects\main.o: .\freeRTOS\core\include\semphr.h
+.\objects\main.o: .\LIB\Asoul_bmp.h

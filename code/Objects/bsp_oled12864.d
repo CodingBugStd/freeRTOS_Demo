@@ -32,3 +32,4 @@
 .\objects\bsp_oled12864.o: .\USER\self_type.h
 .\objects\bsp_oled12864.o: .\USER\soft_delay.h
 .\objects\bsp_oled12864.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\bsp_oled12864.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

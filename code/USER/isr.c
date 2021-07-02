@@ -27,7 +27,7 @@ void USART1_IRQHandler(void)
 }
 ************************************************************/
 
-extern SemaphoreHandle_t Usart_Rx_Flag;
+//extern SemaphoreHandle_t Usart_Rx_Flag;
 void USART1_IRQHandler(void)
 {
     BaseType_t temp = pdFALSE;
@@ -36,7 +36,7 @@ void USART1_IRQHandler(void)
         Rx_SbufferInput(1,USART_ReceiveData(USART1));
         if(*(Usart_Read(1) + *Usart_Read(1))=='\n')
         {
-            xSemaphoreGiveFromISR(Usart_Rx_Flag,&temp);
+            //xSemaphoreGiveFromISR(Usart_Rx_Flag,&temp);
             portEND_SWITCHING_ISR(&temp);
         }
         USART_ClearITPendingBit(USART1,USART_IT_RXNE);

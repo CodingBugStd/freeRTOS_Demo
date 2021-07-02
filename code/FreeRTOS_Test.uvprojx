@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>.\CMSIS;.\FWLIB\inc;.\FWLIB\src;.\USER;.\BSP;.\freeRTOS\core;.\freeRTOS\core\include;.\freeRTOS\port;.\freeRTOS\port\MemMang</IncludePath>
+              <IncludePath>.\CMSIS;.\FWLIB\inc;.\FWLIB\src;.\USER;.\BSP;.\freeRTOS\core;.\freeRTOS\core\include;.\freeRTOS\port;.\freeRTOS\port\MemMang;.\LIB</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -478,6 +478,21 @@
               <FileName>FreeRTOSConfig.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\USER\FreeRTOSConfig.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>LIB</GroupName>
+          <Files>
+            <File>
+              <FileName>freeRTOS_img.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LIB\freeRTOS_img.h</FilePath>
+            </File>
+            <File>
+              <FileName>Asoul_bmp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LIB\Asoul_bmp.h</FilePath>
             </File>
           </Files>
         </Group>

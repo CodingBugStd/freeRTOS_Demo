@@ -161,12 +161,11 @@ bsp_oled12864.h
 #include "stm32f10x.h"
 #include "self_type.h"
 
-#define OLED12864_4Pin_SPI   1
-
 /*************************************
  * OLED12864 7_Pin SPI BSP
  * stm32f103zet6
  * 注意缓存定义的上下与硬件上下相反
+ * 定义左上为x0 y0
  *                  2021/7/1 庞碧璋
 *************************************/
 
@@ -181,8 +180,13 @@ bsp_oled12864.h
 #define OLED_DC_GPIO    GPIOD
 #define OLED_CS_Pin     GPIO_Pin_3
 #define OLED_CS_GPIO    GPIOG
+#define x_MAX           128
+#define y_MAX           64
+#define page_MAX        8
 
 //OLED模式
+#define OLED12864_4Pin_SPI  1   //使用4线SPI通讯
+#define USE_POINT_CRT       1   //使用像素点级别操作
 #if OLED12864_4Pin_SPI == 1
     #define OLED_SCLK_Pin   OLED_D0_Pin
     #define OLED_SCLK_GPIO  OLED_D0_GPIO
@@ -212,8 +216,8 @@ static Pin OLED_Pin[5] = {
 #define OLED_CMD    0
 #define OLED_DATA   1
 
-//OLED12864缓存
 /************************************************
+ * OLED12864缓存
  * [paeg][x]
  * 一个元素保函8像素点信息
  * 在屏幕上,Bit0~Bit7自上向下排列 高位在下
@@ -229,26 +233,41 @@ static uint8_t OLED12864_InitCmd[28] = {
     0x14,0xa4,0xa6,0xaf
 };
 
+//初始化
 void BSP_OLED12864_Init(void);
 void OLED12864_GPIO_Init(void);
 void OLED12864_Hard_Reset(void);
 
 void OLED12864_Set_Bit(uint8_t bit);
 void OLED12864_Reset_Bit(uint8_t bit);
-//因为 定义的缓存高低位 与 硬件高低位 相反
-//所以 将命令与数据的发送函数分离,方便操作
-//void OLED12864_Send_Byte(uint8_t dat,uint8_t cmd)
 void OLED12864_Send_Cmd(uint8_t dat);
 void OLED12864_Send_Data(uint8_t dat);
 void OLED12864_Send_NumByte(uint8_t*dat,uint8_t len,uint8_t cmd);
-
 void OLED12864_Refresh(void);
 void OLED12864_Set_Position(uint8_t page,uint8_t x);
+void OLED12864_Clear_Sbuffer(void);
 void OLED12864_Clear(void);
+//因为 定义的缓存高低位 与 硬件高低位 相反
+//所以 将命令与数据的发送函数分离,方便操作
+//void OLED12864_Send_Byte(uint8_t dat,uint8_t cmd)
 
-void OLED12864_Draw_Point(uint8_t x,uint8_t y);
-void OLED12864_Draw_Block(uint8_t x,uint8_t y,uint8_t len,uint8_t hight,uint8_t*dat);
-void OLED12864_Clear_Block(uint8_t x,uint8_t y,uint8_t len,uint8_t hight);
+#if USE_POINT_CRT == 1
+//以单个像素点为单位的图形操作
+void OLED12864_Draw_Point(uint8_t x,uint8_t y,uint8_t bit);
+void OLED12864_Draw_Line(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2);
+void OLED12864_Draw_Rect(uint8_t x,uint8_t y,uint8_t len,uint8_t hight);
+//*img 采用列行式
+void OLED12864_Draw_Img(uint8_t x,uint8_t y,uint8_t len,uint8_t hight,uint8_t*img);
+#endif
+
+//y坐标位置和高度都以page为单位的图形操作
+void OLED12864_Draw_PageBlock(uint8_t page,uint8_t x,uint8_t len,uint8_t*dat);
+void OLED12864_Clear_PageBlock(uint8_t page,uint8_t x,uint8_t len);
+void OLED12864_Clear_Page(uint8_t page);
+
+void OLED12864_Show_Char(uint8_t page,uint8_t x,uint8_t chr,uint8_t size);
+void OLED12864_Show_String(uint8_t page,uint8_t x,uint8_t*str,uint8_t size);
+void OLED12864_Show_Num(uint8_t page,uint8_t x,int num,uint8_t size);
 
 #endif
 
@@ -259,6 +278,10 @@ bsp_oled12864.c
 ```c
 #include "bsp_oled12864.h"
 #include "soft_delay.h"
+
+#if USE_POINT_CRT == 1
+    #include <math.h>
+#endif
 
 void BSP_OLED12864_Init(void)
 {
@@ -287,21 +310,26 @@ void OLED12864_GPIO_Init(void)
 void OLED12864_Hard_Reset(void)
 {
     OLED12864_Reset_Bit(OLED_RES);
-    soft_delay_ms(300);
+    soft_delay_ms(500);
     OLED12864_Set_Bit(OLED_RES);
-
+    
     OLED12864_Send_NumByte(OLED12864_InitCmd,28,OLED_CMD);
     OLED12864_Clear();
 }
 
-void OLED12864_Clear(void)
+void OLED12864_Clear_Sbuffer(void)
 {
     uint8_t page,x;
     for(page=0;page<8;page++)
     {
         for(x=0;x<128;x++)
-            OLED12864_Sbuffer[page][x] = 0x01;
+            OLED12864_Sbuffer[page][x] = 0x00;
     }
+}
+
+void OLED12864_Clear(void)
+{
+    OLED12864_Clear_Sbuffer();
     OLED12864_Refresh();
 }
 
@@ -382,9 +410,97 @@ void OLED12864_Reset_Bit(uint8_t bit)
     GPIO_ResetBits(OLED_Pin[bit].GPIO,OLED_Pin[bit].Pin);
 }
 
-void OLED12864_Draw_Point(uint8_t x,uint8_t y)
+void OLED12864_Clear_PageBlock(uint8_t page,uint8_t x,uint8_t len)
 {
-    
+    uint8_t sx = x+len;
+    if(sx > x_MAX-1 || page > page_MAX-1)
+        return;
+    for(uint8_t temp=0;temp<len;temp++)
+        OLED12864_Sbuffer[page][temp+x] = 0x00;
 }
+
+void OLED12864_Clear_Page(uint8_t page)
+{
+    OLED12864_Clear_PageBlock(page,0,128);
+}
+
+void OLED12864_Draw_PageBlock(uint8_t page,uint8_t x,uint8_t len,uint8_t*dat)
+{
+    for(uint8_t temp=0;temp<len;temp++)
+    {
+        OLED12864_Sbuffer[page][x+temp] = *dat;
+        dat++;
+    }
+}
+
+//像素点相关操作
+#if USE_POINT_CRT == 1
+
+void OLED12864_Draw_Point(uint8_t x,uint8_t y,uint8_t bit)
+{
+    if(y > y_MAX-1 || x > x_MAX-1)
+        return;
+    uint8_t page = y/8;
+    uint8_t col = y%8;
+    if(bit)
+        OLED12864_Sbuffer[page][x] |= (0x80>>col);
+    else
+        OLED12864_Sbuffer[page][x] &= ~(0x80>>col);
+}
+
+void OLED12864_Draw_Line(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2)
+{
+    double sx,sy;
+    double k,k_1;   //斜率
+    k = ((double)y2-y1) / ((double)x2-x1);
+    k_1 = 1/k;
+    sx = x1;
+    sy = y1;
+    for(;x1<=x2;x1++)
+    {
+        sy += k;
+        OLED12864_Draw_Point(x1,(int)sy,1);
+    }
+    for(;y1<=y2;y1++)
+    {
+        sx += k_1;
+        OLED12864_Draw_Point((int)sx,y1,1);
+    }
+}
+
+void OLED12864_Draw_Rect(uint8_t x,uint8_t y,uint8_t len,uint8_t hight)
+{
+    for(uint8_t temp=0;temp<len;temp++)
+    {
+        OLED12864_Draw_Point(x+temp,y,1);
+        OLED12864_Draw_Point(x+temp,y+hight,1);
+    }
+    for(uint8_t temp=0;temp<hight;temp++)
+    {
+        OLED12864_Draw_Point(x,y+temp,1);
+        OLED12864_Draw_Point(x+len,y+temp,1);
+    }
+}
+
+void OLED12864_Draw_Img(uint8_t x,uint8_t y,uint8_t len,uint8_t hight,uint8_t*img)
+{
+    uint8_t sx,sy;
+    uint16_t dat_addr_pos;
+    uint8_t page_pos;
+    uint8_t bit_pos;
+    for(sy=0;sy<hight;sy++)
+    {
+        page_pos = sy/8;
+        bit_pos = sy%8;
+        for(sx=0;sx<len;sx++)
+        {
+            dat_addr_pos = page_pos*len + sx;
+            OLED12864_Draw_Point(sx+x,sy+y, *(img+dat_addr_pos) & ((0x80)>>bit_pos) );
+        }
+    }
+}
+
+#endif  //USE_POINT_CRT
+
 ```
 
