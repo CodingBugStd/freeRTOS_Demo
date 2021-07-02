@@ -1,9 +1,6 @@
 #include "bsp_oled12864.h"
+#include "font_lib.h"
 #include "soft_delay.h"
-
-#if USE_POINT_CRT == 1
-    #include <math.h>
-#endif
 
 void BSP_OLED12864_Init(void)
 {
@@ -67,28 +64,26 @@ void OLED12864_Refresh(void)
 
 void OLED12864_Set_Position(uint8_t page,uint8_t x)
 {
-    OLED12864_Send_Cmd(0xb0+page);
-    OLED12864_Send_Cmd( ((0xf0&x)>>4)|0x10);
-    OLED12864_Send_Cmd(0x0f&x);
+    OLED12864_Send_Byte(0xb0+page,OLED_CMD);
+    OLED12864_Send_Byte(((0xf0&x)>>4)|0x10,OLED_CMD);
+    OLED12864_Send_Byte(0x0f&x,OLED_CMD);
 }
 
 void OLED12864_Send_NumByte(uint8_t*dat,uint8_t len,uint8_t cmd)
 {
-    void (*FunPtr)(uint8_t dat);
-    if(cmd)
-        FunPtr = OLED12864_Send_Data;
-    else
-        FunPtr = OLED12864_Send_Cmd;
     for(uint8_t temp=0;temp<len;temp++)
     {
-        FunPtr(*dat);
+        OLED12864_Send_Byte(*dat,cmd);
         dat++;
     }
 }
 
-void OLED12864_Send_Cmd(uint8_t dat)
+void OLED12864_Send_Byte(uint8_t dat,uint8_t cmd)
 {
-    OLED12864_Reset_Bit(OLED_DC);
+    if(cmd)
+        OLED12864_Set_Bit(OLED_DC);
+    else
+        OLED12864_Reset_Bit(OLED_DC);
     OLED12864_Reset_Bit(OLED_CS);
     for(uint8_t temp=0;temp<8;temp++)
     {
@@ -98,24 +93,6 @@ void OLED12864_Send_Cmd(uint8_t dat)
         else
             OLED12864_Reset_Bit(OLED_SDIN);
         dat<<=1;
-        OLED12864_Set_Bit(OLED_SCLK);
-    }
-    OLED12864_Set_Bit(OLED_DC);
-    OLED12864_Set_Bit(OLED_CS);
-}
-
-void OLED12864_Send_Data(uint8_t dat)
-{
-    OLED12864_Set_Bit(OLED_DC);
-    OLED12864_Reset_Bit(OLED_CS);
-    for(uint8_t temp=0;temp<8;temp++)
-    {
-        OLED12864_Reset_Bit(OLED_SCLK);
-        if(dat&0x01)
-            OLED12864_Set_Bit(OLED_SDIN);
-        else
-            OLED12864_Reset_Bit(OLED_SDIN);
-        dat>>=1;
         OLED12864_Set_Bit(OLED_SCLK);
     }
     OLED12864_Set_Bit(OLED_DC);
@@ -146,15 +123,6 @@ void OLED12864_Clear_Page(uint8_t page)
     OLED12864_Clear_PageBlock(page,0,128);
 }
 
-void OLED12864_Draw_PageBlock(uint8_t page,uint8_t x,uint8_t len,uint8_t*dat)
-{
-    for(uint8_t temp=0;temp<len;temp++)
-    {
-        OLED12864_Sbuffer[page][x+temp] = *dat;
-        dat++;
-    }
-}
-
 //像素点相关操作
 #if USE_POINT_CRT == 1
 
@@ -165,9 +133,9 @@ void OLED12864_Draw_Point(uint8_t x,uint8_t y,uint8_t bit)
     uint8_t page = y/8;
     uint8_t col = y%8;
     if(bit)
-        OLED12864_Sbuffer[page][x] |= (0x80>>col);
+        OLED12864_Sbuffer[page][x] |= (0x01<<col);
     else
-        OLED12864_Sbuffer[page][x] &= ~(0x80>>col);
+        OLED12864_Sbuffer[page][x] &= ~(0x01<<col);
 }
 
 void OLED12864_Draw_Line(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2)

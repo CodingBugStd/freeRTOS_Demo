@@ -485,14 +485,19 @@
           <GroupName>LIB</GroupName>
           <Files>
             <File>
-              <FileName>freeRTOS_img.h</FileName>
+              <FileName>freeRTOS_bmp.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\LIB\freeRTOS_img.h</FilePath>
+              <FilePath>.\LIB\freeRTOS_bmp.h</FilePath>
             </File>
             <File>
               <FileName>Asoul_bmp.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\LIB\Asoul_bmp.h</FilePath>
+            </File>
+            <File>
+              <FileName>font_lib.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LIB\font_lib.h</FilePath>
             </File>
           </Files>
         </Group>

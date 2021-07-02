@@ -7,7 +7,6 @@
 /*************************************
  * OLED12864 7_Pin SPI BSP
  * stm32f103zet6
- * 注意缓存定义的上下与硬件上下相反
  * 定义左上为x0 y0
  *                  2021/7/1 庞碧璋
 *************************************/
@@ -64,7 +63,6 @@ static Pin OLED_Pin[5] = {
  * [paeg][x]
  * 一个元素保函8像素点信息
  * 在屏幕上,Bit0~Bit7自上向下排列 高位在下
- * 在缓存中,Bit0~Bit7自下向上(方便处理) 高位在上
 ************************************************/
 static uint8_t OLED12864_Sbuffer[8][128];
 //OLED_初始化指令
@@ -83,33 +81,27 @@ void OLED12864_Hard_Reset(void);
 
 void OLED12864_Set_Bit(uint8_t bit);
 void OLED12864_Reset_Bit(uint8_t bit);
-void OLED12864_Send_Cmd(uint8_t dat);
-void OLED12864_Send_Data(uint8_t dat);
+void OLED12864_Send_Byte(uint8_t dat,uint8_t cmd);
 void OLED12864_Send_NumByte(uint8_t*dat,uint8_t len,uint8_t cmd);
 void OLED12864_Refresh(void);
 void OLED12864_Set_Position(uint8_t page,uint8_t x);
-void OLED12864_Clear_Sbuffer(void);
+void OLED12864_Clear_Sbuffer(void);   
 void OLED12864_Clear(void);
-//因为 定义的缓存高低位 与 硬件高低位 相反
-//所以 将命令与数据的发送函数分离,方便操作
-//void OLED12864_Send_Byte(uint8_t dat,uint8_t cmd)
-
-#if USE_POINT_CRT == 1
-//以单个像素点为单位的图形操作
-void OLED12864_Draw_Point(uint8_t x,uint8_t y,uint8_t bit);
-void OLED12864_Draw_Line(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2);
-void OLED12864_Draw_Rect(uint8_t x,uint8_t y,uint8_t len,uint8_t hight);
-//*img 采用列行式
-void OLED12864_Draw_Img(uint8_t x,uint8_t y,uint8_t len,uint8_t hight,uint8_t*img);
-#endif
 
 //y坐标位置和高度都以page为单位的图形操作
-void OLED12864_Draw_PageBlock(uint8_t page,uint8_t x,uint8_t len,uint8_t*dat);
 void OLED12864_Clear_PageBlock(uint8_t page,uint8_t x,uint8_t len);
 void OLED12864_Clear_Page(uint8_t page);
-
 void OLED12864_Show_Char(uint8_t page,uint8_t x,uint8_t chr,uint8_t size);
 void OLED12864_Show_String(uint8_t page,uint8_t x,uint8_t*str,uint8_t size);
 void OLED12864_Show_Num(uint8_t page,uint8_t x,int num,uint8_t size);
+
+    //以单个像素点为单位的图形操作
+    #if USE_POINT_CRT == 1
+    void OLED12864_Draw_Point(uint8_t x,uint8_t y,uint8_t bit);
+    void OLED12864_Draw_Line(uint8_t x1,uint8_t y1,uint8_t x2,uint8_t y2);
+    void OLED12864_Draw_Rect(uint8_t x,uint8_t y,uint8_t len,uint8_t hight);
+    //*img 以字节竖直,高位在上,数据水平
+    void OLED12864_Draw_Img(uint8_t x,uint8_t y,uint8_t len,uint8_t hight,uint8_t*img);
+    #endif  //USE_POINT_CRT
 
 #endif

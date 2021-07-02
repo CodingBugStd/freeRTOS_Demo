@@ -13,6 +13,7 @@
 #include "semphr.h"
 
 #include "Asoul_bmp.h"
+#include "freeRTOS_bmp.h"
 
 #define System_Init_Task_Stack	64
 #define Usart_Send_Task_Stack	64
@@ -50,8 +51,7 @@ void System_Init_Task(void*ptr)
 	BSP_Usart_Init();
 	BSP_OLED12864_Init();
 
-	OLED12864_Draw_Img(0,0,64,64,gImage_a_soul_bmp);
-	OLED12864_Draw_Rect(0,0,127,63);
+	OLED12864_Draw_Img(0,0,128,49,gImage_freeRTOS_img);
 	OLED12864_Refresh();
 
 	soft_delay_ms(1000);
