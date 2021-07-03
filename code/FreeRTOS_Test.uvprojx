@@ -482,26 +482,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>LIB</GroupName>
-          <Files>
-            <File>
-              <FileName>freeRTOS_bmp.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\LIB\freeRTOS_bmp.h</FilePath>
-            </File>
-            <File>
-              <FileName>Asoul_bmp.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\LIB\Asoul_bmp.h</FilePath>
-            </File>
-            <File>
-              <FileName>font_lib.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\LIB\font_lib.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>BSP</GroupName>
           <Files>
             <File>
@@ -568,6 +548,31 @@
               <FileName>timers.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\freeRTOS\core\timers.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>LIB</GroupName>
+          <Files>
+            <File>
+              <FileName>freeRTOS_bmp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LIB\freeRTOS_bmp.h</FilePath>
+            </File>
+            <File>
+              <FileName>font_lib.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LIB\font_lib.h</FilePath>
+            </File>
+            <File>
+              <FileName>asoul_jl_bmp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LIB\asoul_jl_bmp.h</FilePath>
+            </File>
+            <File>
+              <FileName>Asoul_bmp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LIB\Asoul_bmp.h</FilePath>
             </File>
           </Files>
         </Group>

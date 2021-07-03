@@ -120,7 +120,57 @@ void OLED12864_Clear_PageBlock(uint8_t page,uint8_t x,uint8_t len)
 
 void OLED12864_Clear_Page(uint8_t page)
 {
-    OLED12864_Clear_PageBlock(page,0,128);
+    OLED12864_Clear_PageBlock(page,0,127);
+}
+
+void OLED12864_Show_Char(uint8_t page,uint8_t x,uint8_t chr,uint8_t size)
+{
+    switch(size)
+    {
+        case 1:
+            for(uint8_t temp=0;temp<6;temp++)
+                OLED12864_Sbuffer[page][x+temp] = assic_0806[chr-0x20][temp];
+            break;
+        case 2:
+            for(uint8_t page=0;page<2;page++)
+            {
+                for(uint8_t x=0;x<8;x++)
+                    OLED12864_Sbuffer[page][x] = assic_1608[chr-0x20][page*8+x];
+            }
+            break;
+        default:break;
+    }
+}
+
+void OLED12864_Show_Num(uint8_t page,uint8_t x,uint16_t num,uint8_t size)
+{
+    uint8_t len;
+    uint8_t chr;
+    uint16_t temp = num;
+    chr = num%10 - num/100;
+    
+    OLED12864_Show_Char(page,x,num%10-num/100,1);
+}
+
+void OLED12864_Show_String(uint8_t page,uint8_t x,uint8_t*str,uint8_t size)
+{
+    uint8_t sx = 0;
+    while(*str!='\0')
+    {
+        OLED12864_Show_Char(page,x+sx,*str,size);
+        switch(size)
+        {
+            case 1:
+                sx+=6;
+                break;
+            case 2:
+                sx+=8;
+                break;
+            default:
+                break;
+        }
+        str++;
+    }
 }
 
 //像素点相关操作
@@ -185,6 +235,27 @@ void OLED12864_Draw_Img(uint8_t x,uint8_t y,uint8_t len,uint8_t hight,uint8_t*im
         for(sx=0;sx<len;sx++)
         {
             dat_addr_pos = page_pos*len + sx;
+            OLED12864_Draw_Point(sx+x,sy+y, *(img+dat_addr_pos) & ((0x80)>>bit_pos) );
+        }
+    }
+}
+
+void OLED12864_Draw_aImg(uint8_t x,uint8_t y,uint8_t*img)
+{
+    uint8_t len,hight;
+    uint8_t sx,sy;
+    uint16_t dat_addr_pos;
+    uint8_t page_pos;
+    uint8_t bit_pos;
+    len = *(img+3) + *(img+2)*256;
+    hight = *(img+5) + *(img+4)*256;
+    for(sy=0;sy<hight;sy++)
+    {
+        page_pos = sy/8;
+        bit_pos = sy%8;
+        for(sx=0;sx<len;sx++)
+        {
+            dat_addr_pos = page_pos*len + sx + 6;
             OLED12864_Draw_Point(sx+x,sy+y, *(img+dat_addr_pos) & ((0x80)>>bit_pos) );
         }
     }

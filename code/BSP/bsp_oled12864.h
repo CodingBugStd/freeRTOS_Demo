@@ -93,7 +93,7 @@ void OLED12864_Clear_PageBlock(uint8_t page,uint8_t x,uint8_t len);
 void OLED12864_Clear_Page(uint8_t page);
 void OLED12864_Show_Char(uint8_t page,uint8_t x,uint8_t chr,uint8_t size);
 void OLED12864_Show_String(uint8_t page,uint8_t x,uint8_t*str,uint8_t size);
-void OLED12864_Show_Num(uint8_t page,uint8_t x,int num,uint8_t size);
+void OLED12864_Show_Num(uint8_t page,uint8_t x,uint16_t num,uint8_t size);
 
     //以单个像素点为单位的图形操作
     #if USE_POINT_CRT == 1
@@ -102,6 +102,7 @@ void OLED12864_Show_Num(uint8_t page,uint8_t x,int num,uint8_t size);
     void OLED12864_Draw_Rect(uint8_t x,uint8_t y,uint8_t len,uint8_t hight);
     //*img 以字节竖直,高位在上,数据水平
     void OLED12864_Draw_Img(uint8_t x,uint8_t y,uint8_t len,uint8_t hight,uint8_t*img);
+    void OLED12864_Draw_aImg(uint8_t x,uint8_t y,uint8_t*img);  //自带图形大小识别
     #endif  //USE_POINT_CRT
 
 #endif

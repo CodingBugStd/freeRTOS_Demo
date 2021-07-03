@@ -47,3 +47,4 @@
 .\objects\main.o: .\freeRTOS\core\include\semphr.h
 .\objects\main.o: .\LIB\Asoul_bmp.h
 .\objects\main.o: .\LIB\freeRTOS_bmp.h
+.\objects\main.o: .\LIB\asoul_jl_bmp.h

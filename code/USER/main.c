@@ -14,6 +14,7 @@
 
 #include "Asoul_bmp.h"
 #include "freeRTOS_bmp.h"
+#include "asoul_jl_bmp.h"
 
 #define System_Init_Task_Stack	64
 #define Usart_Send_Task_Stack	64
@@ -51,24 +52,25 @@ void System_Init_Task(void*ptr)
 	BSP_Usart_Init();
 	BSP_OLED12864_Init();
 
-	OLED12864_Draw_Img(0,0,128,49,gImage_freeRTOS_img);
+	OLED12864_Show_String(0,0,"SystemInit...",1);
+	OLED12864_Show_String(7,64,"author:PBZ",1);
 	OLED12864_Refresh();
 
-	soft_delay_ms(1000);
+	soft_delay_ms(700);
 
 	//创建任务
 	xTaskCreate(
 		OLED_Refresh_Task,
 		"OLED",
-		32,
+		64,
 		NULL,
-		15,
+		2,
 		&OLED_Refresh_TaskHandle
 	);
 	xTaskCreate(
 		Line_Move_Task,
 		"Move",
-		32,
+		128,
 		NULL,
 		10,
 		&Line_Move_TaskHandle
@@ -79,6 +81,12 @@ void System_Init_Task(void*ptr)
 		printf("Erro\r\n");
 		while(1);
 	}
+	OLED12864_Clear_Page(0);
+	OLED12864_Show_String(0,0,"SystemInit-PASS",1);
+	OLED12864_Refresh();
+	soft_delay_ms(300);
+	OLED12864_Draw_aImg(0,0,gImage_freeRTOS_img);
+	OLED12864_Refresh();
 	vTaskDelete(NULL);
 }
 
@@ -99,18 +107,7 @@ void Line_Move_Task(void*prt)
 	time = xTaskGetTickCount();
 	while(1)
 	{
-		static uint8_t sx = 0;
-		static uint8_t sy = 0;
-		OLED12864_Clear_Sbuffer();
-		OLED12864_Draw_Line(sx,0,sx,63);
-		OLED12864_Draw_Line(0,sy,127,sy);
-		sx+=2;
-		sy++;
-		if(sx>=127)
-			sx = 0;
-		if(sy>=63
-		)
-			sy = 0;
-		vTaskDelayUntil(&time,50/portTICK_RATE_MS);
+		
+		vTaskDelayUntil(&time,1000/portTICK_RATE_MS);
 	}
 }
