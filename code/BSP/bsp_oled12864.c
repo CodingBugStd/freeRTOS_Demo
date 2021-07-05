@@ -144,12 +144,42 @@ void OLED12864_Show_Char(uint8_t page,uint8_t x,uint8_t chr,uint8_t size)
 
 void OLED12864_Show_Num(uint8_t page,uint8_t x,uint16_t num,uint8_t size)
 {
-    uint8_t len;
+    uint16_t len;
     uint8_t chr;
-    uint16_t temp = num;
-    chr = num%10 - num/100;
-    
-    OLED12864_Show_Char(page,x,num%10-num/100,1);
+    uint8_t lx;
+    switch(size)
+    {
+        case 1:
+            lx = 6;
+            break;
+        case 2:
+            lx = 8;
+            break;
+        default:
+            break;
+    }
+    switch(num)
+    {
+        case 0:
+            OLED12864_Show_Char(page,x,'0',size);
+            break;
+        case 1:
+            OLED12864_Show_Char(page,x,'1',size);
+            break;
+        case 2:
+            OLED12864_Show_Char(page,x,'1',size);
+            OLED12864_Show_Char(page,x+lx,'0',size);
+            break;
+        default:
+            for(len=1;len<num;len*=10);
+            for(len/=10;len!=0;len/=10)
+            {
+                chr = num/len+0x30;
+                num%=len;
+                OLED12864_Show_Char(page,x,chr,size);
+                x+=lx;
+            }
+    }
 }
 
 void OLED12864_Show_String(uint8_t page,uint8_t x,uint8_t*str,uint8_t size)

@@ -3,13 +3,6 @@
 
 #include "stm32f10x.h"
 
-//串口发送任务信息结构体
-typedef struct 
-{
-	uint8_t TaskPriority;
-	uint16_t TaskDelayTime;
-}Usart_Send_TaskDat;
-
 //用户指令
 typedef struct
 {

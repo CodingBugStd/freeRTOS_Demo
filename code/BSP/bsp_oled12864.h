@@ -94,6 +94,8 @@ void OLED12864_Clear_Page(uint8_t page);
 void OLED12864_Show_Char(uint8_t page,uint8_t x,uint8_t chr,uint8_t size);
 void OLED12864_Show_String(uint8_t page,uint8_t x,uint8_t*str,uint8_t size);
 void OLED12864_Show_Num(uint8_t page,uint8_t x,uint16_t num,uint8_t size);
+void OLED12864_Show_aNum(uint8_t page,uint8_t x,int num,uint8_t size);
+void OLED12864_Show_fNum(uint8_t page,uint8_t x,double num,uint8_t size,uint8_t d_len);
 
     //以单个像素点为单位的图形操作
     #if USE_POINT_CRT == 1

@@ -32,8 +32,8 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:STM32F103ZE$SVD\STM32F103xx.svd</SFDFile>
-          <bCustSvd>0</bCustSvd>
+          <SFDFile>C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.0.2\SVD\STM32F103xx.SFR</SFDFile>
+          <bCustSvd>1</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -444,6 +444,11 @@
               <FileType>1</FileType>
               <FilePath>.\FWLIB\src\stm32f10x_usart.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f10x_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FWLIB\src\stm32f10x_flash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -465,16 +470,6 @@
               <FilePath>.\USER\isr.c</FilePath>
             </File>
             <File>
-              <FileName>soft_delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\USER\soft_delay.c</FilePath>
-            </File>
-            <File>
-              <FileName>self_type.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\USER\self_type.h</FilePath>
-            </File>
-            <File>
               <FileName>FreeRTOSConfig.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\USER\FreeRTOSConfig.h</FilePath>
@@ -493,6 +488,36 @@
               <FileName>bsp_oled12864.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\BSP\bsp_oled12864.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\bsp_key.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\bsp_led.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\bsp_flash.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>SERVICE</GroupName>
+          <Files>
+            <File>
+              <FileName>service_wifi_at.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SERVICE\service_wifi_at.c</FilePath>
+            </File>
+            <File>
+              <FileName>service_usart_play.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SERVICE\service_usart_play.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -555,6 +580,21 @@
           <GroupName>LIB</GroupName>
           <Files>
             <File>
+              <FileName>soft_delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LIB\soft_delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LIB\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>self_type.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LIB\self_type.h</FilePath>
+            </File>
+            <File>
               <FileName>freeRTOS_bmp.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\LIB\freeRTOS_bmp.h</FilePath>
@@ -573,6 +613,26 @@
               <FileName>Asoul_bmp.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\LIB\Asoul_bmp.h</FilePath>
+            </File>
+            <File>
+              <FileName>earth_bmp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LIB\earth_bmp.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>DOC</GroupName>
+          <Files>
+            <File>
+              <FileName>FreeRTOS_Test.map</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Listings\FreeRTOS_Test.map</FilePath>
+            </File>
+            <File>
+              <FileName>README.md</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\README.md</FilePath>
             </File>
           </Files>
         </Group>

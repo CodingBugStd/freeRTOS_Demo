@@ -33,7 +33,6 @@ void USART_GPIO_Init(void)
     GPIO_Init(GPIOA,&GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
     GPIO_Init(GPIOB,&GPIO_InitStruct);
-
 }
 
 void USART_Config(void)

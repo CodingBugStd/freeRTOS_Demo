@@ -14,7 +14,10 @@
                 "e:\\DataFile\\Code\\STM32Code\\FreeRTOS_Demo\\code\\freeRTOS\\port\\MemMang",
                 "e:\\DataFile\\Code\\STM32Code\\FreeRTOS_Demo\\code\\LIB",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include",
-                "C:\\Keil_v5\\ARM\\ARMCC\\include\\rw"
+                "C:\\Keil_v5\\ARM\\ARMCC\\include\\rw",
+                "e:\\DataFile\\Code\\STM32Code\\FreeRTOS_Demo\\code\\SERVICE",
+                "e:\\DataFile\\Code\\STM32Code\\FreeRTOS_Demo\\code\\Listings",
+                "e:\\DataFile\\Code\\STM32Code\\FreeRTOS_Demo"
             ],
             "defines": [
                 "USE_STDPERIPH_DRIVER",

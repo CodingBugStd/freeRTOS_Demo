@@ -29,7 +29,7 @@
 .\objects\bsp_oled12864.o: .\FWLIB\inc\stm32f10x_usart.h
 .\objects\bsp_oled12864.o: .\FWLIB\inc\stm32f10x_wwdg.h
 .\objects\bsp_oled12864.o: .\FWLIB\inc\misc.h
-.\objects\bsp_oled12864.o: .\USER\self_type.h
+.\objects\bsp_oled12864.o: .\LIB\self_type.h
 .\objects\bsp_oled12864.o: .\LIB\font_lib.h
-.\objects\bsp_oled12864.o: .\USER\soft_delay.h
+.\objects\bsp_oled12864.o: .\LIB\soft_delay.h
 .\objects\bsp_oled12864.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
