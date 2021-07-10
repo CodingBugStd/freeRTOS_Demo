@@ -1,13 +1,28 @@
 {
-    "files.associations": {
-        "bsp_usart.h": "c",
-        "freertos.h": "c",
-        "task.h": "c",
-        "stm32f10x.h": "c",
-        "freertosconfig.h": "c",
-        "isr.h": "c",
-        "bsp_oled12864.h": "c",
-        "img_1.h": "c",
-        "bsp_key.h": "c"
-    }
+  "files.associations": {
+    "bsp_usart.h": "c",
+    "freertos.h": "c",
+    "task.h": "c",
+    "stm32f10x.h": "c",
+    "freertosconfig.h": "c",
+    "isr.h": "c",
+    "bsp_oled12864.h": "c",
+    "img_1.h": "c",
+    "bsp_key.h": "c",
+    "freertos_bmp.h": "c"
+  },
+  "C_Cpp_Runner.warnings": [
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic"
+  ],
+  "C_Cpp_Runner.compilerArgs": [],
+  "C_Cpp_Runner.includePaths": [],
+  "C_Cpp_Runner.linkerArgs": [],
+  "C_Cpp_Runner.cStandard": "",
+  "C_Cpp_Runner.cppStandard": "",
+  "C_Cpp_Runner.excludeSearch": [],
+  "C_Cpp_Runner.enableWarnings": true,
+  "C_Cpp_Runner.warningsAsError": false,
+  "C_Cpp_Runner.cCompilerPath": "C:/TDM-GCC-64/bin/gcc"
 }

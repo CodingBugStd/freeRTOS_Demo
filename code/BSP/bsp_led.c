@@ -33,3 +33,8 @@ void LED_Reversal(uint8_t num)
     else
         LED_Pin[num].GPIO->BSRR |= LED_Pin[num].Pin;
 }
+
+void KED_Breath(uint8_t num,uint8_t Fre)
+{
+    
+}

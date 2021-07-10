@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>.\CMSIS;.\FWLIB\inc;.\FWLIB\src;.\USER;.\BSP;.\freeRTOS\core;.\freeRTOS\core\include;.\freeRTOS\port;.\freeRTOS\port\MemMang;.\LIB</IncludePath>
+              <IncludePath>.\CMSIS;.\FWLIB\inc;.\FWLIB\src;.\USER;.\BSP;.\freeRTOS\core;.\freeRTOS\core\include;.\freeRTOS\port;.\freeRTOS\port\MemMang;.\LIB;.\app</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -499,11 +499,6 @@
               <FileType>1</FileType>
               <FilePath>.\BSP\bsp_led.c</FilePath>
             </File>
-            <File>
-              <FileName>bsp_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\BSP\bsp_flash.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -585,11 +580,6 @@
               <FilePath>.\LIB\soft_delay.c</FilePath>
             </File>
             <File>
-              <FileName>pid.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\LIB\pid.c</FilePath>
-            </File>
-            <File>
               <FileName>self_type.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\LIB\self_type.h</FilePath>
@@ -633,6 +623,16 @@
               <FileName>README.md</FileName>
               <FileType>5</FileType>
               <FilePath>..\README.md</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>APP</GroupName>
+          <Files>
+            <File>
+              <FileName>eat_snake_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\eat_snake_app.c</FilePath>
             </File>
           </Files>
         </Group>

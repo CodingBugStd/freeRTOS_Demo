@@ -19,4 +19,12 @@ typedef struct
     GPIO_TypeDef*GPIO;
 }Pin;
 
+typedef struct
+{
+    uint8_t num;
+    uint16_t on_time;
+    uint16_t cycle;
+}LED_Shine_Data;
+
+
 #endif

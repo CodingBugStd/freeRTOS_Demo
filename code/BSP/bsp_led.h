@@ -16,5 +16,6 @@ static Pin LED_Pin[2] =
 void BSP_LED_Init(void);
 void LED_CTR(uint8_t num,uint8_t cmd);
 void LED_Reversal(uint8_t num);
+void KED_Breath(uint8_t num,uint8_t Fre);
 
 #endif
