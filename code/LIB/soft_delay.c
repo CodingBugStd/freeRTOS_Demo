@@ -18,4 +18,3 @@ void soft_delay_us(unsigned int us)
         us--;
     }
 }
-

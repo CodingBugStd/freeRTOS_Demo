@@ -499,6 +499,11 @@
               <FileType>1</FileType>
               <FilePath>.\BSP\bsp_led.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_pwm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\bsp_pwm.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -623,6 +628,11 @@
               <FileName>README.md</FileName>
               <FileType>5</FileType>
               <FilePath>..\README.md</FilePath>
+            </File>
+            <File>
+              <FileName>计划.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\计划.txt</FilePath>
             </File>
           </Files>
         </Group>

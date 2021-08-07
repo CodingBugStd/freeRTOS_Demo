@@ -11,5 +11,6 @@
 
 void soft_delay_ms(unsigned int ms);
 void soft_delay_us(unsigned int us);
+void swap_byte(unsigned char *a,unsigned char *b);
 
 #endif

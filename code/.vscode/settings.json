@@ -9,7 +9,9 @@
     "bsp_oled12864.h": "c",
     "img_1.h": "c",
     "bsp_key.h": "c",
-    "freertos_bmp.h": "c"
+    "freertos_bmp.h": "c",
+    "bsp_led.h": "c",
+    "font_lib.h": "c"
   },
   "C_Cpp_Runner.warnings": [
     "-Wall",
