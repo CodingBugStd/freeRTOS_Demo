@@ -18,7 +18,6 @@
 ".\objects\bsp_oled12864.o"
 ".\objects\bsp_key.o"
 ".\objects\bsp_led.o"
-".\objects\bsp_pwm.o"
 ".\objects\service_wifi_at.o"
 ".\objects\service_usart_play.o"
 ".\objects\port.o"

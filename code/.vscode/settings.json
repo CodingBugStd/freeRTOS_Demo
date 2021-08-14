@@ -11,7 +11,8 @@
     "bsp_key.h": "c",
     "freertos_bmp.h": "c",
     "bsp_led.h": "c",
-    "font_lib.h": "c"
+    "font_lib.h": "c",
+    "self_type.h": "c"
   },
   "C_Cpp_Runner.warnings": [
     "-Wall",

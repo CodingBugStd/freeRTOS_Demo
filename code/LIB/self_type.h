@@ -26,5 +26,10 @@ typedef struct
     uint16_t cycle;
 }LED_Shine_Data;
 
+typedef struct 
+{
+	uint8_t TaskPriority;
+	uint16_t TaskDelayTime;
+}Usart_Send_TaskDat;
 
 #endif
